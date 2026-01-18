@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#grad)" />
+  
+  <!-- Code brackets < /> -->
+  <g fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left bracket < -->
+    <polyline points="35,35 20,50 35,65" />
+    
+    <!-- Right bracket > -->
+    <polyline points="65,35 80,50 65,65" />
+    
+    <!-- Forward slash / -->
+    <line x1="55" y1="30" x2="45" y2="70" />
+  </g>
+</svg>
