@@ -87,30 +87,15 @@ export const storyTimeline = [
     delay: 4000
   },
 
-  // --- ATO 6: PORTFÓLIO (PROJETOS) ---
+  // --- ATO 6: INTERAÇÃO ---
   {
     id: 13,
-    sender: 'user',
-    text: 'Agora sim tá profissional. Mostra meus projetos principais agora.',
-    delay: 2500
-  },
-  {
-    id: 14,
-    sender: 'ai',
-    text: 'Puxando repositórios... Renderizando vitrine de projetos.',
-    action: 'SHOW_PROJECTS', // Cards de projetos aparecem
-    delay: 4000
-  },
-
-  // --- ATO 7: INTERAÇÃO ---
-  {
-    id: 15,
     sender: 'user',
     text: 'Para fechar, deixa o visitante escolher o toque final do estilo.',
     delay: 3000
   },
   {
-    id: 16,
+    id: 14,
     sender: 'ai',
     text: 'Olá, visitante! Qual "vibe" você quer aplicar agora para finalizar a build?',
     action: 'SHOW_INTERACTION',
@@ -124,9 +109,9 @@ export const storyTimeline = [
     delay: 0 // Pausa para escolha
   },
 
-  // --- ATO 8: FINALIZAÇÃO ---
+  // --- ATO 7: FINALIZAÇÃO ---
   {
-    id: 17,
+    id: 15,
     sender: 'ai',
     text: 'Build finalizada com sucesso! O portfólio está 100% operacional. O que achou?',
     action: 'FINAL_VIEW',

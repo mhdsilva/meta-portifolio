@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion'
-import SkeletonView from './preview/SkeletonView'
 import Navbar from './preview/Navbar'
 import Hero from './preview/Hero'
-import ErrorView from './preview/ErrorView'
 import Footer from './preview/Footer'
 import ThemeOptions from './preview/ThemeOptions'
 import About from './preview/About'
@@ -16,7 +14,6 @@ export default function Preview({ action, payload, onSelect }) {
   const [theme, setTheme] = useState('light')
   const [showError, setShowError] = useState(false)
   const [isFixed, setIsFixed] = useState(false)
-  const [projects, setProjects] = useState([])
   const [isStyled, setIsStyled] = useState(false)
   const [hasAbout, setHasAbout] = useState(false)
   const [hasExperienceSkills, setHasExperienceSkills] = useState(false)
@@ -60,12 +57,6 @@ export default function Preview({ action, payload, onSelect }) {
           setShowError(false)
         }, 2000)
         break
-      case 'SHOW_PROJECTS':
-        if (Array.isArray(payload)) {
-          setProjects(payload)
-        }
-        setCurrentView('PROJECTS')
-        break
       case 'SHOW_INTERACTION':
         setCurrentView('INTERACTION')
         break
@@ -75,21 +66,6 @@ export default function Preview({ action, payload, onSelect }) {
         setIsStyled(true)
         setHasAbout(true)
         setHasExperienceSkills(true)
-        break
-      case 'SET_VIEW':
-        if (payload === 'BASIC_SITE') {
-          setCurrentView('BASIC_SITE')
-        } else if (payload === 'SKELETON') {
-          setCurrentView('SKELETON')
-        }
-        break
-      case 'UPDATE_STYLE':
-        if (payload?.theme) {
-          setTheme(payload.theme)
-        }
-        if (payload?.navbar === 'glass') {
-          setCurrentView('FULL_SITE')
-        }
         break
       default:
         break
@@ -130,19 +106,7 @@ export default function Preview({ action, payload, onSelect }) {
           </motion.div>
         )}
 
-        {currentView === 'SKELETON' && (
-          <motion.div
-            key="skeleton"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex-1 bg-gray-100"
-          >
-            <SkeletonView />
-          </motion.div>
-        )}
-
-        {/* View HTML básico sem estilização */}
+        {/* View HTML básico sem estilização - apenas estrutura inicial */}
         {currentView === 'HTML_VIEW' && (
           <motion.div
             key="html-view"
@@ -152,46 +116,66 @@ export default function Preview({ action, payload, onSelect }) {
             className="flex flex-col h-full bg-white"
             style={{ fontFamily: 'Times, "Times New Roman", serif' }}
           >
-            <header className="p-4 border-b border-gray-400">
-              <h1 className="text-2xl font-bold text-black">DevPortfolio</h1>
-              <nav>
-                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', gap: '20px', marginTop: '10px' }}>
-                  <li><a href="#" style={{ color: '#0000EE', textDecoration: 'underline' }}>Início</a></li>
-                  <li><a href="#" style={{ color: '#0000EE', textDecoration: 'underline' }}>Projetos</a></li>
-                  <li><a href="#" style={{ color: '#0000EE', textDecoration: 'underline' }}>Sobre</a></li>
-                  <li><a href="#" style={{ color: '#0000EE', textDecoration: 'underline' }}>Contato</a></li>
+            <header style={{ padding: '20px', borderBottom: '2px solid #000' }}>
+              <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#000', margin: 0 }}>Matheus Henrique da Silva</h1>
+              <nav style={{ marginTop: '15px' }}>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '20px' }}>
+                  <li><a href="#sobre" style={{ color: '#0000EE', textDecoration: 'underline' }}>Sobre</a></li>
+                  <li><a href="#experiencia" style={{ color: '#0000EE', textDecoration: 'underline' }}>Experiência</a></li>
+                  <li><a href="#tech-stack" style={{ color: '#0000EE', textDecoration: 'underline' }}>Tech Stack</a></li>
+                  <li><a href="#projetos" style={{ color: '#0000EE', textDecoration: 'underline' }}>Projetos</a></li>
+                  <li><a href="#contato" style={{ color: '#0000EE', textDecoration: 'underline' }}>Contato</a></li>
                 </ul>
               </nav>
             </header>
             
-            <main className="flex-1 p-8 bg-white">
-              <h1 className="text-4xl font-bold mb-4 text-black">Meta-Developer</h1>
-              <p className="text-lg mb-4 text-black">
-                Construindo experiências digitais inovadoras com código e criatividade
-              </p>
-              <ul style={{ listStyle: 'disc', paddingLeft: '30px', marginBottom: '20px' }}>
-                <li>GitHub</li>
-                <li>LinkedIn</li>
-                <li>Email</li>
-              </ul>
-              <button style={{ 
-                padding: '10px 20px', 
-                backgroundColor: '#C0C0C0', 
-                border: '2px solid #808080',
-                cursor: 'pointer'
-              }}>
-                Ver Projetos
-              </button>
+            <main style={{ padding: '40px 20px', flex: 1 }}>
+              {/* Hero Section - apenas esta seção na etapa HTML puro */}
+              <section style={{ marginBottom: '40px' }}>
+                <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: '#000', marginBottom: '10px' }}>
+                  Matheus Henrique da Silva
+                </h1>
+                <h2 style={{ fontSize: '20px', color: '#000', marginBottom: '15px' }}>
+                  Tech Lead @ Humanizadas | Arquitetura de Soluções & Inovação
+                </h2>
+                <p style={{ fontSize: '16px', color: '#000', lineHeight: '1.6', marginBottom: '20px', maxWidth: '800px' }}>
+                  Engenheiro de Software movido pelo desafio de conectar gestão de produtos e código de alta performance. 
+                  Especialista em levar produtos da concepção ao lançamento.
+                </p>
+                <div style={{ marginTop: '20px' }}>
+                  <a href="#projetos" style={{ 
+                    display: 'inline-block',
+                    padding: '10px 20px', 
+                    backgroundColor: '#C0C0C0', 
+                    border: '2px solid #808080',
+                    color: '#000',
+                    textDecoration: 'none',
+                    marginRight: '10px'
+                  }}>
+                    Ver Projetos
+                  </a>
+                  <a href="https://linkedin.com/in/matheushenrique2773" style={{ 
+                    display: 'inline-block',
+                    padding: '10px 20px', 
+                    backgroundColor: '#E0E0E0', 
+                    border: '2px solid #808080',
+                    color: '#000',
+                    textDecoration: 'none'
+                  }}>
+                    LinkedIn
+                  </a>
+                </div>
+              </section>
             </main>
             
-            <footer className="p-4 border-t border-gray-400 bg-white">
-              <p className="text-black">© 2026 DevPortfolio</p>
+            <footer style={{ padding: '20px', borderTop: '2px solid #000', backgroundColor: '#FFF' }}>
+              <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>© 2026 Matheus Henrique da Silva</p>
             </footer>
           </motion.div>
         )}
 
         {/* View com estilos aplicados */}
-        {(currentView === 'STYLED_SITE' || (isStyled && currentView !== 'PROJECTS' && currentView !== 'INTERACTION' && currentView !== 'FINAL')) && (
+        {(currentView === 'STYLED_SITE' || (isStyled && currentView !== 'INTERACTION' && currentView !== 'FINAL')) && (
           <motion.div
             key="styled-site"
             initial={{ opacity: 0 }}
@@ -217,69 +201,6 @@ export default function Preview({ action, payload, onSelect }) {
           </motion.div>
         )}
 
-        {currentView === 'BASIC_SITE' && (
-          <motion.div
-            key="basic-site"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col h-full bg-white"
-          >
-            {/* Navbar básico sem estilização */}
-            <nav className="flex items-center justify-between p-4 border-b border-gray-300">
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-black">DevPortfolio</span>
-              </div>
-              <div className="hidden md:flex gap-6">
-                <a href="#" className="text-gray-700">Início</a>
-                <a href="#" className="text-gray-700">Projetos</a>
-                <a href="#" className="text-gray-700">Sobre</a>
-                <a href="#" className="text-gray-700">Contato</a>
-              </div>
-            </nav>
-            
-            {/* Hero básico sem estilização */}
-            <section className="flex-1 flex items-center justify-center p-8 bg-white">
-              <div className="text-center max-w-2xl">
-                <h1 className="text-5xl font-bold mb-6 text-black">
-                  Meta-Developer
-                </h1>
-                <p className="text-lg mb-8 text-gray-700">
-                  Construindo experiências digitais inovadoras com código e criatividade
-                </p>
-                <div className="flex gap-4 justify-center mb-8">
-                  <span className="text-gray-600">GitHub</span>
-                  <span className="text-gray-600">LinkedIn</span>
-                  <span className="text-gray-600">Email</span>
-                </div>
-                <button className="px-6 py-3 bg-gray-300 text-black rounded border border-gray-400">
-                  Ver Projetos
-                </button>
-              </div>
-            </section>
-            
-            {/* Footer básico */}
-            <footer className="p-6 border-t border-gray-300 bg-white">
-              <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                <span className="text-gray-600">© 2026 DevPortfolio</span>
-                <div className="flex gap-4">
-                  <span className="text-gray-600">GitHub</span>
-                  <span className="text-gray-600">LinkedIn</span>
-                  <span className="text-gray-600">Email</span>
-                </div>
-                <span className="text-gray-600">Feito com código</span>
-              </div>
-            </footer>
-          </motion.div>
-        )}
-
-        {currentView === 'FULL_SITE' && (
-          <>
-            <Navbar key="navbar" theme={theme} />
-            <Hero key="hero" theme={theme} />
-            <Footer key="footer" theme={theme} />
-          </>
-        )}
 
         {showError && (
           <motion.div
@@ -314,50 +235,6 @@ Recovering...`}
                 </motion.div>
               )}
             </div>
-          </motion.div>
-        )}
-
-        {currentView === 'PROJECTS' && (
-          <motion.div
-            key="projects"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col h-full"
-          >
-            <Navbar key="navbar" theme={theme} />
-            <div className="flex-1 p-8">
-              <div className="max-w-6xl mx-auto mt-8">
-                <h2 className={`text-3xl font-bold mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  Projetos
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {projects.length > 0 ? projects.map((project, index) => (
-                    <motion.div
-                      key={project}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg p-6 hover:scale-105 transition-transform`}
-                    >
-                      <h3 className={`text-xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                        {project}
-                      </h3>
-                      <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
-                        Descrição do projeto em desenvolvimento...
-                      </p>
-                    </motion.div>
-                  )) : (
-                    <div className="col-span-3 text-center py-12">
-                      <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
-                        Carregando projetos...
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <Footer key="footer" theme={theme} />
           </motion.div>
         )}
 
@@ -399,33 +276,6 @@ Recovering...`}
                   <TechStack key="tech-stack" theme={theme} />
                 </div>
               </>
-            )}
-            {projects.length > 0 && (
-              <div id="projetos" className={`py-16 px-8 ${theme === 'dark' ? 'bg-slate-950' : 'bg-white'}`}>
-                <div className="max-w-6xl mx-auto">
-                  <h2 className={`text-3xl font-bold mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                    Projetos
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {projects.map((project, index) => (
-                      <motion.div
-                        key={project}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg p-6 hover:scale-105 transition-transform`}
-                      >
-                        <h3 className={`text-xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                          {project}
-                        </h3>
-                        <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
-                          Descrição do projeto em desenvolvimento...
-                        </p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
             )}
             <div id="contato">
               <Footer key="footer" theme={theme} />
