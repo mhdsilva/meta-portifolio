@@ -1,91 +1,118 @@
-const storyTimeline = [
-  // --- ATO 1: O INÍCIO RÁPIDO ---
+export const storyTimeline = [
+  // --- ATO 1: ESTRUTURA (HTML PURO) ---
   {
     id: 1,
     sender: 'user',
-    text: 'IA, preciso de um portfólio agora. Gera um esqueleto básico pra mim, por favor.',
+    text: 'IA, vamos começar do zero. Gera um esqueleto HTML básico para o meu portfólio.',
     delay: 800
   },
   {
     id: 2,
     sender: 'ai',
-    text: 'Entendido! Iniciando scaffolding... Criando estrutura básica do portfólio.',
-    action: 'SET_VIEW',
-    payload: 'BASIC_SITE', // Mostra versão básica sem estilização
-    delay: 4000 // Tempo para o usuário ver o site básico antes da próxima mensagem
+    text: 'Com certeza. Criando estrutura semântica: header, main e footer...',
+    action: 'SHOW_HTML', // O Preview deve mostrar um site "feio" (fundo branco, Times New Roman)
+    delay: 3500
   },
 
-  // --- ATO 2: REFINAMENTO VISUAL ---
+  // --- ATO 2: ESTILIZAÇÃO (CSS) ---
   {
     id: 3,
     sender: 'user',
-    text: 'Legal, mas tá muito sem graça. Muda esse cabeçalho pra algo moderno e bota um modo escuro.',
-    delay: 3000
+    text: 'Beleza, agora dá uma cara de site de desenvolvedor. Bota um tema Dark e uma tipografia moderna.',
+    delay: 2500
   },
   {
     id: 4,
     sender: 'ai',
-    text: 'Boa escolha. Aplicando Dark Mode e Glassmorphism no Navbar...',
-    action: 'UPDATE_STYLE',
-    payload: { theme: 'dark', navbar: 'glass' },
-    delay: 4000 // Tempo para visualizar as mudanças
+    text: 'Aplicando Reset CSS e definindo variáveis de cores. Ativando Dark Mode...',
+    action: 'APPLY_STYLES', // O Preview ganha cores, fontes e layout (Flexbox/Grid)
+    delay: 4000
   },
 
-  // --- ATO 3: O ERRO PLANEJADO ---
+  // --- ATO 3: IDENTIDADE (SOBRE MIM) ---
   {
     id: 5,
     sender: 'user',
-    text: 'Agora bota um efeito de partículas bem pesado no fundo pra impressionar.',
+    text: 'Gostei. Agora escreve uma seção "Sobre Mim" que conte que eu vim da roça mas domino o código.',
     delay: 3000
   },
   {
     id: 6,
     sender: 'ai',
-    text: 'Claro, injetando animação de alta performance...',
-    action: 'TRIGGER_CRASH', // Aqui a tela da direita deve ficar preta ou dar erro
-    delay: 3500 // Tempo para ver o erro antes da próxima mensagem
+    text: 'Digitando bio... "Cultivando soluções digitais com a resiliência de quem entende o valor do plantio."',
+    action: 'ADD_ABOUT', // Surge a seção de texto com uma animação de fade-in
+    delay: 4500
   },
+
+  // --- ATO 4: CARREIRA E SKILLS ---
   {
     id: 7,
     sender: 'user',
-    text: 'Eita! Quebrou tudo. Dá um "Rollback" e corrige a importação da biblioteca, você esqueceu o escopo!',
+    text: 'Ficou massa. Adiciona agora minha trajetória profissional e as tecnologias que eu uso.',
     delay: 3000
   },
   {
     id: 8,
     sender: 'ai',
-    text: 'Putz, erro de iniciante. Corrigindo dependências e limpando o cache...',
-    action: 'FIX_CRASH', // O site volta ao normal, mas com as partículas funcionando suave
-    delay: 4000 // Tempo para ver a correção
+    text: 'Mapeando linha do tempo e organizando o stack tecnológico no Celeiro de Habilidades.',
+    action: 'ADD_EXPERIENCE_SKILLS', // Aparecem os cards de exp e as tags de skills
+    delay: 5000
   },
 
-  // --- ATO 4: CONTEÚDO ---
+  // --- ATO 5: O ERRO (PARTÍCULAS) ---
   {
     id: 9,
     sender: 'user',
-    text: 'Agora sim. Pode "puxar" meus projetos principais da horta de código.',
+    text: 'O site tá sólido. Mas quero algo "uau". Bota um efeito de partículas pesadão no fundo.',
     delay: 3000
   },
   {
     id: 10,
     sender: 'ai',
-    text: 'Colhendo projetos do GitHub... Renderizando cards interativos.',
-    action: 'SHOW_PROJECTS',
-    payload: ['projeto-1', 'projeto-2', 'projeto-3'],
-    delay: 4000 // Tempo para visualizar os projetos
+    text: 'Injetando Three.js para renderização de partículas em tempo real...',
+    action: 'TRIGGER_CRASH', // A tela "quebra" ou dá glitch
+    delay: 3500
   },
-
-  // --- ATO 5: INTERAÇÃO DO VISITANTE ---
   {
     id: 11,
     sender: 'user',
-    text: 'IA, cansei de escolher. Deixa quem está assistindo decidir o toque final.',
+    text: 'Nossa, pesado até demais! Quebrou tudo. Corrige esse script e otimiza a performance!',
     delay: 3000
   },
   {
     id: 12,
     sender: 'ai',
-    text: 'Olá, visitante! Qual sotaque visual você prefere para este portfólio?',
+    text: 'Ops! Vazamento de memória detectado. Refatorando para usar instanciamento e reduzir draw calls...',
+    action: 'FIX_CRASH', // O site volta limpo com partículas leves e fluidas
+    delay: 4000
+  },
+
+  // --- ATO 6: PORTFÓLIO (PROJETOS) ---
+  {
+    id: 13,
+    sender: 'user',
+    text: 'Agora sim tá profissional. Mostra meus projetos principais agora.',
+    delay: 2500
+  },
+  {
+    id: 14,
+    sender: 'ai',
+    text: 'Puxando repositórios... Renderizando vitrine de projetos.',
+    action: 'SHOW_PROJECTS', // Cards de projetos aparecem
+    delay: 4000
+  },
+
+  // --- ATO 7: INTERAÇÃO ---
+  {
+    id: 15,
+    sender: 'user',
+    text: 'Para fechar, deixa o visitante escolher o toque final do estilo.',
+    delay: 3000
+  },
+  {
+    id: 16,
+    sender: 'ai',
+    text: 'Olá, visitante! Qual "vibe" você quer aplicar agora para finalizar a build?',
     action: 'SHOW_INTERACTION',
     payload: {
       options: [
@@ -94,14 +121,14 @@ const storyTimeline = [
         { label: 'Vibe Roça (Rústico)', value: 'RUSTIC' }
       ]
     },
-    delay: 0 // Pausa aqui aguardando interação
+    delay: 0 // Pausa para escolha
   },
 
-  // --- ATO 6: ENCERRAMENTO ---
+  // --- ATO 8: FINALIZAÇÃO ---
   {
-    id: 13,
+    id: 17,
     sender: 'ai',
-    text: 'Escolha aplicada! O portfólio está pronto para navegação. Gostou da build?',
+    text: 'Build finalizada com sucesso! O portfólio está 100% operacional. O que achou?',
     action: 'FINAL_VIEW',
     delay: 3000
   }

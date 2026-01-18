@@ -37,7 +37,6 @@ function App() {
         <Preview 
           action={currentAction} 
           payload={currentPayload}
-          isPaused={isPaused}
           onSelect={handleInteraction}
         />
       </div>
