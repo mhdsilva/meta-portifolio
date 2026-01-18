@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Bot, User, Minimize2, RotateCcw } from 'lucide-react'
 
-export default function Chat({ messages, isTyping, isPaused, interactionOptions, onInteraction, isOpen, onToggle, onReset, isUserTypingInInput, userInputText }) {
+export default function Chat({ messages, isTyping, isPaused, interactionOptions, onInteraction, isOpen, onToggle, onReset, isUserTypingInInput, userInputText, isFullscreen = false }) {
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const [inputHeight, setInputHeight] = useState(40)
@@ -39,33 +39,52 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
 
   return (
     <>
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            onClick={onToggle}
-            className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[110]"
-          >
-            <Bot size={24} className="text-white" />
-            {messages.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs text-white">
-                {messages.length}
-              </span>
-            )}
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {/* Botão flutuante - só aparece quando não está em fullscreen e está fechado */}
+      {!isFullscreen && (
+        <AnimatePresence>
+          {!isOpen && (
+            <motion.button
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              onClick={onToggle}
+              className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[110]"
+            >
+              <Bot size={24} className="text-white" />
+              {messages.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs text-white">
+                  {messages.length}
+                </span>
+              )}
+            </motion.button>
+          )}
+        </AnimatePresence>
+      )}
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isOpen && (
           <motion.div
-            initial={{ x: 400, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 400, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-6 right-6 w-full max-w-md h-[600px] bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl flex flex-col z-[110] overflow-hidden"
+            key={isFullscreen ? 'fullscreen' : 'floating'}
+            layout
+            initial={isFullscreen ? { opacity: 0 } : { x: 400, opacity: 0, scale: 0.9 }}
+            animate={
+              isFullscreen
+                ? { opacity: 1, scale: 1 }
+                : { x: 0, opacity: 1, scale: 1 }
+            }
+            exit={isFullscreen ? { opacity: 0 } : { x: 400, opacity: 0, scale: 0.9 }}
+            transition={{
+              type: 'spring',
+              damping: 30,
+              stiffness: 300,
+              mass: 0.8,
+              duration: 0.6
+            }}
+            className={
+              isFullscreen
+                ? "fixed inset-0 w-full h-full bg-gray-950 flex flex-col z-[110] overflow-hidden"
+                : "fixed bottom-6 right-6 w-full max-w-md h-[600px] bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl flex flex-col z-[110] overflow-hidden"
+            }
           >
             <div className="p-4 border-b border-gray-800 bg-gray-900 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -88,13 +107,15 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
                 >
                   <RotateCcw size={18} className="text-gray-400 hover:text-white" />
                 </button>
-                <button
-                  onClick={onToggle}
-                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-                  title="Minimizar"
-                >
-                  <Minimize2 size={18} className="text-gray-400 hover:text-white" />
-                </button>
+                {!isFullscreen && (
+                  <button
+                    onClick={onToggle}
+                    className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                    title="Minimizar"
+                  >
+                    <Minimize2 size={18} className="text-gray-400 hover:text-white" />
+                  </button>
+                )}
               </div>
             </div>
 

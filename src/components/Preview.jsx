@@ -121,9 +121,6 @@ export default function Preview({ action, payload }) {
           dispatch({ type: 'HIDE_ERROR' })
         }, 2000)
         break
-      case 'SHOW_INTERACTION':
-        // Não muda o preview, apenas pausa o storytelling para escolha no chat
-        break
       case 'FINAL_VIEW':
         dispatch({ type: 'FINAL_VIEW' })
         break

@@ -1,13 +1,19 @@
-import { motion } from 'framer-motion'
+// eslint-disable-next-line no-unused-vars
+import { motion, useInView } from 'framer-motion'
 import { Linkedin, Mail, Phone, Heart } from 'lucide-react'
+import { useRef } from 'react'
 
 export default function Footer({ theme = 'light' }) {
   const isDark = theme === 'dark' || theme === 'cyber'
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, amount: 0.3 })
   
   return (
     <motion.footer
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      ref={ref}
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.8 }}
       className={`py-12 px-8 border-t ${isDark ? 'bg-slate-950 border-white/10' : 'bg-white border-gray-200'}`}
     >
       <div className="max-w-6xl mx-auto">
@@ -17,20 +23,28 @@ export default function Footer({ theme = 'light' }) {
               Contato
             </h3>
             <div className="space-y-3">
-              <a
+              <motion.a
                 href="mailto:matheushenrique2773@gmail.com"
+                initial={{ opacity: 0, x: -20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ delay: 0.2 }}
+                whileHover={{ x: 5, scale: 1.02 }}
                 className={`flex items-center gap-3 ${isDark ? 'text-gray-300 hover:text-purple-400' : 'text-gray-600 hover:text-purple-600'} transition-colors`}
               >
                 <Mail size={18} />
                 <span>matheushenrique2773@gmail.com</span>
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="tel:+5534998147021"
+                initial={{ opacity: 0, x: -20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                transition={{ delay: 0.3 }}
+                whileHover={{ x: 5, scale: 1.02 }}
                 className={`flex items-center gap-3 ${isDark ? 'text-gray-300 hover:text-purple-400' : 'text-gray-600 hover:text-purple-600'} transition-colors`}
               >
                 <Phone size={18} />
                 <span>(34) 99814-7021</span>
-              </a>
+              </motion.a>
             </div>
           </div>
 
@@ -44,7 +58,14 @@ export default function Footer({ theme = 'light' }) {
                 href="https://linkedin.com/in/matheushenrique2773"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+                transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
+                whileHover={{ 
+                  scale: 1.15, 
+                  rotate: 5,
+                  transition: { duration: 0.2 }
+                }}
                 whileTap={{ scale: 0.9 }}
                 className={`p-3 rounded-lg ${isDark ? 'bg-white/5 hover:bg-white/10 text-purple-400' : 'bg-gray-100 hover:bg-gray-200 text-purple-600'} transition-colors`}
               >
@@ -68,11 +89,21 @@ export default function Footer({ theme = 'light' }) {
           <div className={`flex items-center gap-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
             <span>© 2026 Matheus Henrique</span>
           </div>
-          <div className="flex items-center gap-2">
+          <motion.div 
+            className="flex items-center gap-2"
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: 0.5 }}
+          >
             <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Feito com</span>
-            <Heart size={16} className="text-red-500 fill-red-500" />
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
+            >
+              <Heart size={16} className="text-red-500 fill-red-500" />
+            </motion.div>
             <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>e código</span>
-          </div>
+          </motion.div>
         </div>
       </div>
     </motion.footer>

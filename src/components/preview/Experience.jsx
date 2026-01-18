@@ -1,8 +1,11 @@
-import { motion } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { Briefcase, Calendar } from 'lucide-react'
+import { useRef } from 'react'
 
 export default function Experience({ theme = 'light' }) {
   const isDark = theme === 'dark' || theme === 'cyber'
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, amount: 0.2 })
   
   const experiences = [
     {
@@ -44,15 +47,17 @@ export default function Experience({ theme = 'light' }) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
-      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+      ref={ref}
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.8 }}
       className={`py-20 px-8 ${isDark ? 'bg-slate-950' : 'bg-white'}`}
     >
       <div className="max-w-4xl mx-auto">
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className={`text-4xl md:text-5xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
@@ -60,24 +65,46 @@ export default function Experience({ theme = 'light' }) {
         </motion.h2>
         
         <div className="relative">
-          {/* Timeline line */}
-          <div className={`absolute left-8 top-0 bottom-0 w-0.5 ${isDark ? 'bg-purple-500/30' : 'bg-purple-200'}`} />
+          {/* Timeline line with animation */}
+          <motion.div
+            initial={{ scaleY: 0 }}
+            animate={isInView ? { scaleY: 1 } : { scaleY: 0 }}
+            transition={{ duration: 1, delay: 0.4 }}
+            className={`absolute left-8 top-0 bottom-0 w-0.5 origin-top ${isDark ? 'bg-purple-500/30' : 'bg-purple-200'}`}
+          />
           
           <div className="space-y-8">
             {experiences.map((exp, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
+                initial={{ opacity: 0, x: -50, rotateY: -15 }}
+                animate={isInView ? { opacity: 1, x: 0, rotateY: 0 } : { opacity: 0, x: -50, rotateY: -15 }}
+                transition={{ 
+                  delay: 0.5 + index * 0.15,
+                  duration: 0.6,
+                  type: 'spring',
+                  stiffness: 100
+                }}
+                style={{ perspective: 1000 }}
                 className="relative pl-20"
               >
-                {/* Timeline dot */}
-                <div className={`absolute left-6 top-2 w-4 h-4 rounded-full ${isDark ? 'bg-purple-500' : 'bg-purple-600'} border-4 ${isDark ? 'border-slate-950' : 'border-white'}`} />
+                {/* Timeline dot with pulse animation */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={isInView ? { scale: 1 } : { scale: 0 }}
+                  transition={{ delay: 0.6 + index * 0.15, type: 'spring', stiffness: 200 }}
+                  className={`absolute left-6 top-2 w-4 h-4 rounded-full ${isDark ? 'bg-purple-500' : 'bg-purple-600'} border-4 ${isDark ? 'border-slate-950' : 'border-white'}`}
+                />
                 
                 <motion.div
-                  whileHover={{ scale: 1.02, x: 10 }}
-                  className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-xl p-6 hover:border-purple-500/50 transition-all`}
+                  whileHover={{ 
+                    scale: 1.02, 
+                    x: 10,
+                    rotateY: 5,
+                    transition: { duration: 0.3 }
+                  }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                  className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-xl p-6 hover:border-purple-500/50 transition-all cursor-pointer`}
                 >
                   <div className="flex items-start gap-4 mb-3">
                     <div className={`text-3xl ${isDark ? 'bg-white/10' : 'bg-gray-100'} rounded-lg p-3`}>

@@ -27,10 +27,6 @@ export default function useStorytelling() {
     setCurrentAction(step.action || null)
     setCurrentPayload(step.payload || null)
 
-    if (step.action === 'SHOW_INTERACTION') {
-      setIsPaused(true)
-    }
-
     if (step.delay > 0) {
       const timeout = setTimeout(() => {
         if (nextStepRef.current) {

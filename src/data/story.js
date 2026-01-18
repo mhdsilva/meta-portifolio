@@ -87,31 +87,9 @@ export const storyTimeline = [
     delay: 4000
   },
 
-  // --- ATO 6: INTERAÇÃO ---
+  // --- ATO 6: FINALIZAÇÃO ---
   {
     id: 13,
-    sender: 'user',
-    text: 'Para fechar, deixa o visitante escolher o toque final do estilo.',
-    delay: 3000
-  },
-  {
-    id: 14,
-    sender: 'ai',
-    text: 'Olá, visitante! Qual "vibe" você quer aplicar agora para finalizar a build?',
-    action: 'SHOW_INTERACTION',
-    payload: {
-      options: [
-        { label: 'Minimalista (Clean)', value: 'MINIMAL' },
-        { label: 'Cyberpunk (Neon)', value: 'CYBER' },
-        { label: 'Vibe Roça (Rústico)', value: 'RUSTIC' }
-      ]
-    },
-    delay: 0 // Pausa para escolha
-  },
-
-  // --- ATO 7: FINALIZAÇÃO ---
-  {
-    id: 15,
     sender: 'ai',
     text: 'Build finalizada com sucesso! O portfólio está 100% operacional. O que achou?',
     action: 'FINAL_VIEW',

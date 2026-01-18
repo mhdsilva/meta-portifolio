@@ -1,8 +1,11 @@
-import { motion } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { Code, Database, Cloud, Users } from 'lucide-react'
+import { useRef } from 'react'
 
 export default function TechStack({ theme = 'light' }) {
   const isDark = theme === 'dark' || theme === 'cyber'
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, amount: 0.2 })
   
   const categories = [
     {
@@ -67,15 +70,17 @@ export default function TechStack({ theme = 'light' }) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
-      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 }}
+      ref={ref}
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.8 }}
       className={`py-20 px-8 ${isDark ? 'bg-slate-950' : 'bg-white'}`}
     >
       <div className="max-w-7xl mx-auto">
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className={`text-4xl md:text-5xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
@@ -90,11 +95,23 @@ export default function TechStack({ theme = 'light' }) {
             return (
               <motion.div
                 key={category.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-2xl p-6 hover:border-purple-500/50 transition-all`}
+                initial={{ opacity: 0, y: 50, rotateX: -20, scale: 0.9 }}
+                animate={isInView ? { opacity: 1, y: 0, rotateX: 0, scale: 1 } : { opacity: 0, y: 50, rotateX: -20, scale: 0.9 }}
+                transition={{ 
+                  delay: 0.3 + index * 0.1,
+                  duration: 0.6,
+                  type: 'spring',
+                  stiffness: 100
+                }}
+                whileHover={{ 
+                  scale: 1.05, 
+                  y: -8,
+                  rotateY: 5,
+                  rotateX: 5,
+                  transition: { duration: 0.3 }
+                }}
+                style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
+                className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-2xl p-6 hover:border-purple-500/50 transition-all cursor-pointer`}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`p-2 rounded-lg ${colors.bg}`}>
@@ -108,10 +125,15 @@ export default function TechStack({ theme = 'light' }) {
                   {category.skills.map((skill, skillIndex) => (
                     <motion.span
                       key={skill}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.6 + index * 0.1 + skillIndex * 0.05 }}
-                      className={`px-3 py-1.5 rounded-full text-sm font-medium border ${colors.bg} ${colors.text} ${colors.border}`}
+                      initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                      animate={isInView ? { opacity: 1, scale: 1, rotate: 0 } : { opacity: 0, scale: 0, rotate: -180 }}
+                      transition={{ 
+                        delay: 0.4 + index * 0.1 + skillIndex * 0.05,
+                        type: 'spring',
+                        stiffness: 200
+                      }}
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium border ${colors.bg} ${colors.text} ${colors.border} cursor-pointer`}
                     >
                       {skill}
                     </motion.span>
