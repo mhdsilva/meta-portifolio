@@ -84,6 +84,9 @@ function previewReducer(state, { type }) {
 export default function Preview({ action, payload }) {
   const [state, dispatch] = useReducer(previewReducer, initialState)
   const timeoutRef = useRef(null)
+  const containerRef = useRef(null)
+  const prevHasAboutRef = useRef(false)
+  const prevHasExperienceSkillsRef = useRef(false)
 
   useEffect(() => {
     if (!action) return
@@ -137,6 +140,57 @@ export default function Preview({ action, payload }) {
 
   const { currentView, theme, showError, isFixed, isStyled, hasAbout, hasExperienceSkills, isCrashed } = state
 
+  // Reset refs quando as seções são removidas
+  useEffect(() => {
+    if (!hasAbout) {
+      prevHasAboutRef.current = false
+    }
+  }, [hasAbout])
+
+  useEffect(() => {
+    if (!hasExperienceSkills) {
+      prevHasExperienceSkillsRef.current = false
+    }
+  }, [hasExperienceSkills])
+
+  // Scroll automático quando About é adicionado
+  useEffect(() => {
+    if (hasAbout && !prevHasAboutRef.current && containerRef.current) {
+      prevHasAboutRef.current = true
+      // Aguarda um pouco para a animação começar
+      setTimeout(() => {
+        const sobreElement = document.getElementById('sobre')
+        if (sobreElement && containerRef.current) {
+          const navbarHeight = 80 // Altura aproximada da navbar
+          const elementPosition = sobreElement.getBoundingClientRect().top + containerRef.current.scrollTop
+          containerRef.current.scrollTo({
+            top: elementPosition - navbarHeight - 20,
+            behavior: 'smooth'
+          })
+        }
+      }, 500) // Delay para permitir que a animação comece
+    }
+  }, [hasAbout])
+
+  // Scroll automático quando Experience/Skills são adicionados
+  useEffect(() => {
+    if (hasExperienceSkills && !prevHasExperienceSkillsRef.current && containerRef.current) {
+      prevHasExperienceSkillsRef.current = true
+      // Aguarda um pouco para a animação começar
+      setTimeout(() => {
+        const experienciaElement = document.getElementById('experiencia')
+        if (experienciaElement && containerRef.current) {
+          const navbarHeight = 80 // Altura aproximada da navbar
+          const elementPosition = experienciaElement.getBoundingClientRect().top + containerRef.current.scrollTop
+          containerRef.current.scrollTo({
+            top: elementPosition - navbarHeight - 20,
+            behavior: 'smooth'
+          })
+        }
+      }, 500) // Delay para permitir que a animação comece
+    }
+  }, [hasExperienceSkills])
+
   const getBackgroundColor = () => {
     if (theme === 'dark' || theme === 'cyber') {
       return 'bg-gray-900'
@@ -155,6 +209,7 @@ export default function Preview({ action, payload }) {
   return (
     <>
       <div 
+        ref={containerRef}
         className={`flex flex-col h-screen w-screen overflow-y-auto transition-all duration-1000 ${getBackgroundColor()}`}
         style={crashStyle}
       >
@@ -248,7 +303,11 @@ export default function Preview({ action, payload }) {
             >
               <Navbar key="navbar" theme={theme} />
               <Hero key="hero" theme={theme} />
-              {hasAbout && <About key="about" theme={theme} />}
+              {hasAbout && (
+                <div id="sobre">
+                  <About key="about" theme={theme} />
+                </div>
+              )}
               {hasExperienceSkills && (
                 <>
                   <div id="experiencia">

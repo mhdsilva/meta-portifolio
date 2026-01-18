@@ -35,7 +35,6 @@ export default function ExperienceSkills({ theme = 'light' }) {
       }`}
     >
       <div className="max-w-6xl mx-auto">
-        {/* Experiência */}
         <div className="mb-12">
           <h2 className={`text-3xl font-bold mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Trajetória Profissional
@@ -72,7 +71,6 @@ export default function ExperienceSkills({ theme = 'light' }) {
           </div>
         </div>
 
-        {/* Skills */}
         <div>
           <h2 className={`text-3xl font-bold mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Celeiro de Habilidades
