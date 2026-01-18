@@ -17,7 +17,9 @@ export default function Preview({ action, payload, isPaused, onSelect }) {
   useEffect(() => {
     switch (action) {
       case 'SET_VIEW':
-        if (payload === 'SKELETON') {
+        if (payload === 'BASIC_SITE') {
+          setCurrentView('BASIC_SITE')
+        } else if (payload === 'SKELETON') {
           setCurrentView('SKELETON')
         }
         break
@@ -88,6 +90,62 @@ export default function Preview({ action, payload, isPaused, onSelect }) {
             className="flex-1 bg-gray-100"
           >
             <SkeletonView />
+          </motion.div>
+        )}
+
+        {currentView === 'BASIC_SITE' && (
+          <motion.div
+            key="basic-site"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col h-full bg-white"
+          >
+            {/* Navbar básico sem estilização */}
+            <nav className="flex items-center justify-between p-4 border-b border-gray-300">
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold text-black">DevPortfolio</span>
+              </div>
+              <div className="hidden md:flex gap-6">
+                <a href="#" className="text-gray-700">Início</a>
+                <a href="#" className="text-gray-700">Projetos</a>
+                <a href="#" className="text-gray-700">Sobre</a>
+                <a href="#" className="text-gray-700">Contato</a>
+              </div>
+            </nav>
+            
+            {/* Hero básico sem estilização */}
+            <section className="flex-1 flex items-center justify-center p-8 bg-white">
+              <div className="text-center max-w-2xl">
+                <h1 className="text-5xl font-bold mb-6 text-black">
+                  Meta-Developer
+                </h1>
+                <p className="text-lg mb-8 text-gray-700">
+                  Construindo experiências digitais inovadoras com código e criatividade
+                </p>
+                <div className="flex gap-4 justify-center mb-8">
+                  <span className="text-gray-600">GitHub</span>
+                  <span className="text-gray-600">LinkedIn</span>
+                  <span className="text-gray-600">Email</span>
+                </div>
+                <button className="px-6 py-3 bg-gray-300 text-black rounded border border-gray-400">
+                  Ver Projetos
+                </button>
+              </div>
+            </section>
+            
+            {/* Footer básico */}
+            <footer className="p-6 border-t border-gray-300 bg-white">
+              <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                <span className="text-gray-600">© 2026 DevPortfolio</span>
+                <div className="flex gap-4">
+                  <span className="text-gray-600">GitHub</span>
+                  <span className="text-gray-600">LinkedIn</span>
+                  <span className="text-gray-600">Email</span>
+                </div>
+                <span className="text-gray-600">Feito com código</span>
+              </div>
+            </footer>
           </motion.div>
         )}
 

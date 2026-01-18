@@ -43,10 +43,12 @@ export default function useStorytelling() {
 
     if (step.sender === 'ai') {
       setIsTyping(true)
+      // Simula tempo de digitação baseado no tamanho da mensagem (mais natural)
+      const typingTime = Math.max(1500, step.text.length * 30)
       setTimeout(() => {
         setIsTyping(false)
         processStep(step)
-      }, 1000)
+      }, typingTime)
     } else {
       processStep(step)
     }
