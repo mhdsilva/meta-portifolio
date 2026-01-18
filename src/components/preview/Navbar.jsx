@@ -23,14 +23,14 @@ export default function Navbar({ theme = 'light' }) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-6 backdrop-blur-lg text-white border-b ${
+      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-3 sm:p-6 backdrop-blur-lg text-white border-b ${
         isDark 
           ? 'border-white/10' 
           : 'border-gray-200'
       }`}
     >
       <motion.div 
-        className="flex items-center gap-2"
+        className="flex items-center gap-1.5 sm:gap-2"
         whileHover={{ scale: 1.05 }}
         transition={{ type: 'spring', stiffness: 400 }}
       >
@@ -38,9 +38,9 @@ export default function Navbar({ theme = 'light' }) {
           animate={{ rotate: [0, 10, -10, 0] }}
           transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
         >
-          <Code2 size={24} className={isDark ? 'text-purple-400' : 'text-purple-600'} />
+          <Code2 size={20} className={`sm:w-6 sm:h-6 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
         </motion.div>
-        <span className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>Matheus Henrique</span>
+        <span className={`text-sm sm:text-xl font-bold truncate max-w-[150px] sm:max-w-none ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>Matheus Henrique</span>
       </motion.div>
       <div className="hidden md:flex gap-8">
         {['Sobre', 'Experiência', 'Tech Stack', 'Projetos', 'Contato'].map((item, index) => (
@@ -62,7 +62,7 @@ export default function Navbar({ theme = 'light' }) {
           </motion.a>
         ))}
       </div>
-      <Menu className="md:hidden" size={24} />
+      <Menu className={`md:hidden ${isDark ? 'text-white' : 'text-gray-900'}`} size={20} />
     </motion.nav>
   )
 }

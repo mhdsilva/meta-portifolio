@@ -188,7 +188,7 @@ export default function Preview({ action, payload }) {
       <CodeLensProvider isActive={hasCodeLens && !showError}>
         <div 
           ref={containerRef}
-          className={`flex flex-col h-screen w-screen overflow-y-auto transition-all duration-1000 ${getBackgroundColor()}`}
+          className={`flex flex-col h-full w-full overflow-y-auto overflow-x-hidden transition-all duration-1000 ${getBackgroundColor()}`}
           style={crashStyle}
         >
           <AnimatePresence mode="wait">

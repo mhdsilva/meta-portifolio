@@ -1,9 +1,23 @@
 import { useRef, useEffect, useState } from 'react'
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, User, Minimize2, RotateCcw } from 'lucide-react'
+import { Send, Bot, User, Minimize2, RotateCcw, ChevronUp, ChevronDown } from 'lucide-react'
 
-export default function Chat({ messages, isTyping, isPaused, interactionOptions, onInteraction, isOpen, onToggle, onReset, isUserTypingInInput, userInputText, isFullscreen = false }) {
+export default function Chat({ 
+  messages, 
+  isTyping, 
+  isPaused, 
+  interactionOptions, 
+  onInteraction, 
+  isOpen, 
+  onToggle, 
+  onReset, 
+  isUserTypingInInput, 
+  userInputText, 
+  isFullscreen = false,
+  isMobile = false,
+  isMobileExpanded = true
+}) {
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const [inputHeight, setInputHeight] = useState(40)
@@ -33,6 +47,210 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
     onInteraction(option.label)
   }
 
+  // Mobile Layout - parte inferior da tela
+  if (isMobile && !isFullscreen) {
+    return (
+      <motion.div
+        className="flex-1 bg-gray-950 border-t border-gray-800 flex flex-col overflow-hidden"
+        initial={{ height: '55%' }}
+        animate={{ 
+          height: isMobileExpanded ? '55%' : '15%',
+          minHeight: isMobileExpanded ? '200px' : '60px'
+        }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+      >
+        {/* Header com toggle para expandir/recolher */}
+        <div 
+          className="p-3 border-b border-gray-800 bg-gray-900 flex items-center justify-between cursor-pointer touch-manipulation"
+          onClick={onToggle}
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <Bot size={16} className="text-white" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-white">AI Assistant</h2>
+              <p className="text-xs text-gray-400 flex items-center gap-1">
+                <span className={`w-1.5 h-1.5 rounded-full ${isTyping ? 'bg-green-400 animate-pulse' : isPaused ? 'bg-yellow-400' : 'bg-green-500'}`} />
+                {isTyping ? 'Digitando...' : isPaused ? 'Aguardando...' : 'Online'}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                onReset()
+              }}
+              className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors"
+              title="Reset"
+            >
+              <RotateCcw size={16} className="text-gray-400 hover:text-white" />
+            </button>
+            <div className="p-1.5 rounded-lg bg-gray-800/50">
+              {isMobileExpanded ? (
+                <ChevronDown size={18} className="text-gray-400" />
+              ) : (
+                <ChevronUp size={18} className="text-gray-400" />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Conteúdo do chat - só visível quando expandido */}
+        <AnimatePresence>
+          {isMobileExpanded && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex flex-col overflow-hidden"
+            >
+              {/* Mensagens */}
+              <div className="flex-1 overflow-y-auto p-3 space-y-3">
+                <AnimatePresence>
+                  {messages.map((msg) => {
+                    const messageId = msg.id || msg.text
+                    
+                    return (
+                      <motion.div
+                        key={messageId}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div className={`flex items-start gap-2 max-w-[90%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
+                          <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            msg.sender === 'user' ? 'bg-blue-600' : 'bg-gray-700'
+                          }`}>
+                            {msg.sender === 'user' ? <User size={12} className="text-white" /> : <Bot size={12} className="text-gray-300" />}
+                          </div>
+                          <div
+                            className={`px-3 py-2 rounded-xl text-sm ${
+                              msg.sender === 'user'
+                                ? 'bg-blue-600 text-white rounded-br-md'
+                                : 'bg-gray-700 text-gray-100 rounded-bl-md'
+                            }`}
+                          >
+                            {msg.text}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )
+                  })}
+                  
+                  {isTyping && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex justify-start"
+                    >
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
+                          <Bot size={12} className="text-gray-300" />
+                        </div>
+                        <div className="bg-gray-700 px-3 py-2 rounded-xl rounded-bl-md">
+                          <div className="flex gap-1">
+                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {isPaused && interactionOptions && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex justify-start"
+                    >
+                      <div className="flex items-start gap-2 max-w-[90%]">
+                        <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
+                          <Bot size={12} className="text-gray-300" />
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          {interactionOptions.map((option, index) => (
+                            <motion.button
+                              key={option.value}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              onClick={() => handleOptionClick(option)}
+                              className="w-full text-left px-3 py-2 bg-gray-700 hover:bg-blue-600 text-gray-100 text-sm rounded-lg transition-colors border border-gray-600 hover:border-blue-500"
+                            >
+                              {option.label}
+                            </motion.button>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Input - mais compacto no mobile */}
+              <div className="p-3 border-t border-gray-800 bg-gray-900">
+                <div className="flex gap-2 items-end">
+                  <textarea
+                    ref={inputRef}
+                    value={isUserTypingInInput ? userInputText : ''}
+                    readOnly
+                    placeholder={isPaused ? "Selecione acima..." : isUserTypingInInput ? "Digitando..." : "Aguardando IA..."}
+                    rows={1}
+                    className={`flex-1 px-3 py-2 rounded-lg border transition-all resize-none overflow-y-auto text-sm ${
+                      isUserTypingInInput
+                        ? 'bg-gray-800 text-white border-blue-500 cursor-text'
+                        : 'bg-gray-800 text-gray-500 border-gray-700 opacity-50 cursor-not-allowed'
+                    }`}
+                    style={{
+                      minHeight: '36px',
+                      maxHeight: '80px',
+                      height: `${Math.min(inputHeight, 80)}px`
+                    }}
+                  />
+                  <button
+                    type="button"
+                    disabled={!isUserTypingInInput}
+                    className={`px-3 py-2 rounded-lg flex items-center justify-center transition-all flex-shrink-0 ${
+                      isUserTypingInInput
+                        ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                        : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Indicador de atividade quando minimizado */}
+        {!isMobileExpanded && (isTyping || messages.length > 0) && (
+          <div className="px-3 py-2 text-xs text-gray-400 flex items-center gap-2">
+            {isTyping ? (
+              <>
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                AI está digitando...
+              </>
+            ) : (
+              <>
+                <span className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+                {messages.length} mensagen{messages.length !== 1 ? 's' : ''}
+                {messages.length > 0 && ` • Toque para ver`}
+              </>
+            )}
+          </div>
+        )}
+      </motion.div>
+    )
+  }
+
+  // Desktop/Fullscreen Layout (original)
   return (
     <>
       {!isFullscreen && (

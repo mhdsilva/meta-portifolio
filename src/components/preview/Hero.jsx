@@ -17,7 +17,7 @@ export default function Hero({ theme = 'light' }) {
     <motion.section
       ref={ref}
       style={{ y, opacity }}
-      className={`min-h-screen flex items-center justify-center p-8 pt-24 relative overflow-hidden ${
+      className={`min-h-[100dvh] flex items-center justify-center p-4 sm:p-8 pt-20 sm:pt-24 relative overflow-hidden ${
         isDark 
           ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
           : 'bg-gradient-to-br from-gray-50 to-white'
@@ -47,7 +47,7 @@ export default function Hero({ theme = 'light' }) {
           transition={{ delay: 0.3, duration: 0.8 }}
         >
           <motion.h1
-            className={`text-6xl md:text-7xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}
+            className={`text-3xl sm:text-5xl md:text-7xl font-bold mb-2 sm:mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}
             style={{ fontFamily: 'Inter, sans-serif' }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -57,7 +57,7 @@ export default function Hero({ theme = 'light' }) {
             Matheus Henrique da Silva
           </motion.h1>
           <motion.p
-            className={`text-xl md:text-2xl mb-6 ${isDark ? 'text-purple-400' : 'text-purple-600'}`}
+            className={`text-base sm:text-xl md:text-2xl mb-3 sm:mb-6 ${isDark ? 'text-purple-400' : 'text-purple-600'}`}
             style={{ fontFamily: 'Inter, sans-serif' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -66,7 +66,7 @@ export default function Hero({ theme = 'light' }) {
             Tech Lead @ Humanizadas | Arquitetura de Soluções & Inovação
           </motion.p>
           <motion.p
-            className={`text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
+            className={`text-sm sm:text-lg md:text-xl mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
             style={{ fontFamily: 'Inter, sans-serif' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -88,7 +88,7 @@ export default function Hero({ theme = 'light' }) {
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             style={{ perspective: 1000 }}
-            className={`flex items-center gap-2 px-8 py-4 rounded-lg font-semibold transition-all relative overflow-hidden ${
+            className={`flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 rounded-lg font-semibold text-sm sm:text-base transition-all relative overflow-hidden ${
               isDark
                 ? 'bg-white/10 backdrop-blur-lg text-white border border-white/20 hover:border-purple-500/50 hover:bg-white/15'
                 : 'bg-purple-600 text-white hover:bg-purple-700'
@@ -102,7 +102,7 @@ export default function Hero({ theme = 'light' }) {
             />
             <span className="relative z-10 flex items-center gap-2">
               Ver Projetos
-              <ArrowRight size={20} />
+              <ArrowRight size={18} className="sm:w-5 sm:h-5" />
             </span>
           </motion.a>
           <motion.a
@@ -111,15 +111,15 @@ export default function Hero({ theme = 'light' }) {
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className={`flex items-center gap-2 px-8 py-4 rounded-lg font-semibold transition-all ${
+            className={`flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 rounded-lg font-semibold text-sm sm:text-base transition-all ${
               isDark
                 ? 'bg-white/5 backdrop-blur-lg text-white border border-white/10 hover:border-blue-500/50 hover:bg-white/10'
                 : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300'
             }`}
           >
-            <Linkedin size={20} />
+            <Linkedin size={18} className="sm:w-5 sm:h-5" />
             LinkedIn
-            <ExternalLink size={16} />
+            <ExternalLink size={14} className="sm:w-4 sm:h-4" />
           </motion.a>
         </motion.div>
       </div>
