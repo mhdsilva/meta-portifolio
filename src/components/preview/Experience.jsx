@@ -1,5 +1,5 @@
 import { motion, useInView } from 'framer-motion'
-import { Briefcase, Calendar } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 import { useRef } from 'react'
 
 export default function Experience({ theme = 'light' }) {
@@ -65,7 +65,6 @@ export default function Experience({ theme = 'light' }) {
         </motion.h2>
         
         <div className="relative">
-          {/* Timeline line with animation */}
           <motion.div
             initial={{ scaleY: 0 }}
             animate={isInView ? { scaleY: 1 } : { scaleY: 0 }}
@@ -88,7 +87,6 @@ export default function Experience({ theme = 'light' }) {
                 style={{ perspective: 1000 }}
                 className="relative pl-20"
               >
-                {/* Timeline dot with pulse animation */}
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={isInView ? { scale: 1 } : { scale: 0 }}

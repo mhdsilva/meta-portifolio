@@ -15,12 +15,24 @@ export default function useStorytelling() {
   const intervalsRef = useRef([])
   const nextStepRef = useRef(null)
 
-  const clearTimeouts = () => {
+  const clearAllTimers = useCallback(() => {
     timeoutsRef.current.forEach(clearTimeout)
     timeoutsRef.current = []
     intervalsRef.current.forEach(clearInterval)
     intervalsRef.current = []
-  }
+  }, [])
+
+  const resetState = useCallback(() => {
+    clearAllTimers()
+    currentIndexRef.current = -1
+    setMessages([])
+    setCurrentAction(null)
+    setCurrentPayload(null)
+    setIsPaused(false)
+    setIsTyping(false)
+    setIsUserTypingInInput(false)
+    setUserInputText('')
+  }, [clearAllTimers])
 
   const processStep = useCallback((step) => {
     setMessages(prev => [...prev, step])
@@ -29,9 +41,7 @@ export default function useStorytelling() {
 
     if (step.delay > 0) {
       const timeout = setTimeout(() => {
-        if (nextStepRef.current) {
-          nextStepRef.current()
-        }
+        nextStepRef.current?.()
       }, step.delay)
       timeoutsRef.current.push(timeout)
     }
@@ -40,16 +50,13 @@ export default function useStorytelling() {
   const nextStep = useCallback(() => {
     const nextIndex = currentIndexRef.current + 1
     
-    if (nextIndex >= storyTimeline.length) {
-      return
-    }
+    if (nextIndex >= storyTimeline.length) return
 
     currentIndexRef.current = nextIndex
     const step = storyTimeline[nextIndex]
 
     if (step.sender === 'ai') {
       setIsTyping(true)
-      // Simula tempo de digitação baseado no tamanho da mensagem (mais natural)
       const typingTime = Math.max(1500, step.text.length * 30)
       const timeout = setTimeout(() => {
         setIsTyping(false)
@@ -57,85 +64,52 @@ export default function useStorytelling() {
       }, typingTime)
       timeoutsRef.current.push(timeout)
     } else {
-      // Para mensagens do usuário, simula digitação no input primeiro
+      // Simula digitação do usuário
       setIsUserTypingInInput(true)
       setUserInputText('')
       
-      // Simula digitação letra por letra no input
-      let currentText = ''
       let charIndex = 0
       const typingInterval = setInterval(() => {
         if (charIndex < step.text.length) {
-          currentText += step.text[charIndex]
-          setUserInputText(currentText)
+          setUserInputText(step.text.slice(0, charIndex + 1))
           charIndex++
         } else {
           clearInterval(typingInterval)
-          // Remove o intervalo da lista
           intervalsRef.current = intervalsRef.current.filter(i => i !== typingInterval)
-          // Aguarda um pouco antes de "enviar"
+          
           const timeout = setTimeout(() => {
             setIsUserTypingInInput(false)
             setUserInputText('')
             processStep(step)
-          }, 500) // Pequeno delay antes de enviar
+          }, 500)
           timeoutsRef.current.push(timeout)
         }
-      }, 30) // Velocidade de digitação (30ms por caractere)
+      }, 30)
       intervalsRef.current.push(typingInterval)
     }
   }, [processStep])
 
-  // Atualiza o ref quando nextStep muda
   useEffect(() => {
     nextStepRef.current = nextStep
   }, [nextStep])
 
   const startStory = useCallback(() => {
-    clearTimeouts()
-    currentIndexRef.current = -1
-    setMessages([])
-    setCurrentAction(null)
-    setCurrentPayload(null)
-    setIsPaused(false)
-    setIsTyping(false)
-    setIsUserTypingInInput(false)
-    setUserInputText('')
-    if (nextStepRef.current) {
-      nextStepRef.current()
-    }
-  }, [])
+    resetState()
+    // Pequeno delay para garantir que o estado foi resetado
+    setTimeout(() => nextStepRef.current?.(), 0)
+  }, [resetState])
 
   const handleInteraction = useCallback((value) => {
     if (!isPaused) return
 
     setMessages(prev => [
       ...prev,
-      {
-        id: Date.now(),
-        sender: 'user',
-        text: `Escolhi: ${value}`,
-        delay: 0
-      }
+      { id: Date.now(), sender: 'user', text: `Escolhi: ${value}`, delay: 0 }
     ])
     
     setIsPaused(false)
-    if (nextStepRef.current) {
-      nextStepRef.current()
-    }
+    nextStepRef.current?.()
   }, [isPaused])
-
-  const resetStory = useCallback(() => {
-    clearTimeouts()
-    currentIndexRef.current = -1
-    setMessages([])
-    setCurrentAction(null)
-    setCurrentPayload(null)
-    setIsPaused(false)
-    setIsTyping(false)
-    setIsUserTypingInInput(false)
-    setUserInputText('')
-  }, [])
 
   return {
     messages,
@@ -147,7 +121,7 @@ export default function useStorytelling() {
     userInputText,
     startStory,
     handleInteraction,
-    resetStory,
+    resetStory: resetState,
     totalSteps: storyTimeline.length
   }
 }

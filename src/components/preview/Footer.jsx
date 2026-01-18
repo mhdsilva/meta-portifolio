@@ -48,7 +48,6 @@ export default function Footer({ theme = 'light' }) {
             </div>
           </div>
 
-          {/* Social */}
           <div>
             <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
               Social
@@ -74,7 +73,6 @@ export default function Footer({ theme = 'light' }) {
             </div>
           </div>
 
-          {/* Info */}
           <div>
             <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
               Matheus Henrique

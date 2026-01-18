@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef } from 'react'
+import { useReducer, useEffect, useRef, useCallback } from 'react'
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion'
 import Navbar from './preview/Navbar'
@@ -8,165 +8,7 @@ import About from './preview/About'
 import Experience from './preview/Experience'
 import TechStack from './preview/TechStack'
 import CodeLensWrapper, { CodeLensProvider } from './preview/CodeLensWrapper'
-
-// Snippets de código para cada componente
-const codeSnippets = {
-  navbar: `import { motion } from 'framer-motion'
-import { Code2, Menu } from 'lucide-react'
-
-export default function Navbar({ theme }) {
-  const isDark = theme === 'dark'
-  
-  return (
-    <motion.nav
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="fixed top-0 z-50 backdrop-blur-lg"
-    >
-      <Logo icon={<Code2 />} />
-      <NavLinks items={[
-        'Sobre', 'Experiência',
-        'Tech Stack', 'Projetos'
-      ]} />
-    </motion.nav>
-  )
-}`,
-
-  hero: `import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight, Linkedin } from 'lucide-react'
-
-export default function Hero({ theme }) {
-  const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
-  
-  return (
-    <motion.section style={{ y }} className="min-h-screen">
-      <motion.h1
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-7xl font-bold"
-      >
-        Matheus Henrique da Silva
-      </motion.h1>
-      <Badge role="Tech Lead @ Humanizadas" />
-      <CTAButton href="#projetos">Ver Projetos</CTAButton>
-    </motion.section>
-  )
-}`,
-
-  about: `import { motion } from 'framer-motion'
-import { GraduationCap, Medal, Globe } from 'lucide-react'
-
-export default function About({ theme }) {
-  return (
-    <section className="py-20 px-8">
-      <BentoGrid cols={3}>
-        <Card type="bio" className="col-span-2">
-          <p>Engenheiro de Software movido pelo desafio...</p>
-        </Card>
-        <Card type="education">
-          <GraduationCap />
-          <span>USP • CEFET-MG</span>
-        </Card>
-        <Card type="achievement">
-          <Medal className="text-yellow-400" />
-          <span>🏅 Medalha OBM</span>
-        </Card>
-        <Card type="languages">
-          <Globe />
-          <span>PT-BR • EN • ES</span>
-        </Card>
-      </BentoGrid>
-    </section>
-  )
-}`,
-
-  experience: `import { motion } from 'framer-motion'
-
-const jobs = [
-  { company: 'Humanizadas', role: 'Tech Lead', period: '2024-atual' },
-  { company: 'Kairoo Tech', role: 'Full Stack Developer', period: '2023' },
-  { company: 'BeUni', role: 'Frontend Developer', period: '2022' },
-  // ...
-]
-
-export default function Experience({ theme }) {
-  return (
-    <section className="py-20">
-      <h2>Experiência Profissional</h2>
-      <Timeline>
-        {jobs.map((job, i) => (
-          <motion.div
-            key={job.company}
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.1 }}
-          >
-            <TimelineCard {...job} />
-          </motion.div>
-        ))}
-      </Timeline>
-    </section>
-  )
-}`,
-
-  techstack: `import { motion } from 'framer-motion'
-import { 
-  SiReact, SiTypescript, SiNodedotjs,
-  SiPython, SiPostgresql, SiDocker
-} from 'react-icons/si'
-
-const skills = {
-  frontend: ['React', 'TypeScript', 'Next.js', 'Tailwind'],
-  backend: ['Node.js', 'Python', 'FastAPI', 'GraphQL'],
-  database: ['PostgreSQL', 'MongoDB', 'Redis'],
-  devops: ['Docker', 'AWS', 'CI/CD', 'Kubernetes']
-}
-
-export default function TechStack({ theme }) {
-  return (
-    <section className="py-20">
-      <h2>Tech Stack</h2>
-      <SkillGrid>
-        {Object.entries(skills).map(([category, items]) => (
-          <CategorySection key={category} title={category}>
-            {items.map(skill => (
-              <SkillBadge key={skill} name={skill} />
-            ))}
-          </CategorySection>
-        ))}
-      </SkillGrid>
-    </section>
-  )
-}`,
-
-  footer: `import { motion } from 'framer-motion'
-import { Github, Linkedin, Mail, Send } from 'lucide-react'
-
-export default function Footer({ theme }) {
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    await sendEmail(formData)
-  }
-
-  return (
-    <footer className="py-16 bg-gradient-to-t from-black">
-      <ContactForm onSubmit={handleSubmit}>
-        <Input name="name" placeholder="Seu nome" />
-        <Input name="email" type="email" placeholder="seu@email.com" />
-        <TextArea name="message" placeholder="Sua mensagem..." />
-        <Button type="submit">
-          <Send /> Enviar
-        </Button>
-      </ContactForm>
-      <SocialLinks>
-        <a href="https://github.com/..."><Github /></a>
-        <a href="https://linkedin.com/in/..."><Linkedin /></a>
-      </SocialLinks>
-    </footer>
-  )
-}`
-}
+import { codeSnippets } from '../data/codeSnippets'
 
 const initialState = {
   currentView: 'INITIAL',
@@ -191,45 +33,19 @@ function previewReducer(state, { type }) {
         hasExperienceSkills: false
       }
     case 'APPLY_STYLES':
-      return {
-        ...state,
-        isStyled: true,
-        theme: 'dark'
-      }
+      return { ...state, isStyled: true, theme: 'dark' }
     case 'SET_VIEW':
-      return {
-        ...state,
-        currentView: 'STYLED_SITE'
-      }
+      return { ...state, currentView: 'STYLED_SITE' }
     case 'ADD_ABOUT':
-      return {
-        ...state,
-        hasAbout: true
-      }
+      return { ...state, hasAbout: true }
     case 'ADD_EXPERIENCE_SKILLS':
-      return {
-        ...state,
-        hasExperienceSkills: true
-      }
+      return { ...state, hasExperienceSkills: true }
     case 'TRIGGER_CRASH':
-      return {
-        ...state,
-        isCrashed: true,
-        showError: true,
-        isFixed: false
-      }
+      return { ...state, isCrashed: true, showError: true, isFixed: false }
     case 'FIX_CRASH':
-      return {
-        ...state,
-        isFixed: true,
-        isCrashed: false,
-        hasCodeLens: true
-      }
+      return { ...state, isFixed: true, isCrashed: false, hasCodeLens: true }
     case 'HIDE_ERROR':
-      return {
-        ...state,
-        showError: false
-      }
+      return { ...state, showError: false }
     case 'FINAL_VIEW':
       return {
         ...state,
@@ -248,9 +64,44 @@ export default function Preview({ action, payload }) {
   const [state, dispatch] = useReducer(previewReducer, initialState)
   const timeoutRef = useRef(null)
   const containerRef = useRef(null)
-  const prevHasAboutRef = useRef(false)
-  const prevHasExperienceSkillsRef = useRef(false)
+  const scrolledSectionsRef = useRef({ about: false, experience: false })
 
+  const { currentView, theme, showError, isFixed, isStyled, hasAbout, hasExperienceSkills, isCrashed, hasCodeLens } = state
+
+  // Scroll automático unificado para novas seções
+  const scrollToSection = useCallback((sectionId, sectionKey) => {
+    if (scrolledSectionsRef.current[sectionKey] || !containerRef.current) return
+    
+    scrolledSectionsRef.current[sectionKey] = true
+    setTimeout(() => {
+      const element = document.getElementById(sectionId)
+      if (element && containerRef.current) {
+        const navbarHeight = 80
+        const elementPosition = element.getBoundingClientRect().top + containerRef.current.scrollTop
+        containerRef.current.scrollTo({
+          top: elementPosition - navbarHeight - 20,
+          behavior: 'smooth'
+        })
+      }
+    }, 500)
+  }, [])
+
+  // Reset scroll refs quando seções são removidas
+  useEffect(() => {
+    if (!hasAbout) scrolledSectionsRef.current.about = false
+    if (!hasExperienceSkills) scrolledSectionsRef.current.experience = false
+  }, [hasAbout, hasExperienceSkills])
+
+  // Scroll automático ao adicionar seções
+  useEffect(() => {
+    if (hasAbout) scrollToSection('sobre', 'about')
+  }, [hasAbout, scrollToSection])
+
+  useEffect(() => {
+    if (hasExperienceSkills) scrollToSection('experiencia', 'experience')
+  }, [hasExperienceSkills, scrollToSection])
+
+  // Processar ações
   useEffect(() => {
     if (!action) return
     
@@ -259,133 +110,48 @@ export default function Preview({ action, payload }) {
       timeoutRef.current = null
     }
 
-    switch (action) {
-      case 'SHOW_HTML':
-        dispatch({ type: 'SHOW_HTML' })
-        break
-      case 'APPLY_STYLES':
-        dispatch({ type: 'APPLY_STYLES' })
-        timeoutRef.current = setTimeout(() => {
-          dispatch({ type: 'SET_VIEW' })
-        }, 100)
-        break
-      case 'ADD_ABOUT':
-        dispatch({ type: 'ADD_ABOUT' })
-        break
-      case 'ADD_EXPERIENCE_SKILLS':
-        dispatch({ type: 'ADD_EXPERIENCE_SKILLS' })
-        break
-      case 'TRIGGER_CRASH':
-        dispatch({ type: 'TRIGGER_CRASH' })
-        break
-      case 'FIX_CRASH':
-        dispatch({ type: 'FIX_CRASH' })
-        timeoutRef.current = setTimeout(() => {
-          dispatch({ type: 'HIDE_ERROR' })
-        }, 2000)
-        break
-      case 'FINAL_VIEW':
-        dispatch({ type: 'FINAL_VIEW' })
-        break
-      default:
-        break
+    dispatch({ type: action })
+
+    if (action === 'APPLY_STYLES') {
+      timeoutRef.current = setTimeout(() => dispatch({ type: 'SET_VIEW' }), 100)
+    } else if (action === 'FIX_CRASH') {
+      timeoutRef.current = setTimeout(() => dispatch({ type: 'HIDE_ERROR' }), 2000)
     }
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
   }, [action, payload])
 
-  const { currentView, theme, showError, isFixed, isStyled, hasAbout, hasExperienceSkills, isCrashed, hasCodeLens } = state
+  const getBackgroundColor = () => 
+    (theme === 'dark' || theme === 'cyber') ? 'bg-gray-900' : 'bg-white'
 
-  // Reset refs quando as seções são removidas
-  useEffect(() => {
-    if (!hasAbout) {
-      prevHasAboutRef.current = false
-    }
-  }, [hasAbout])
+  const crashStyle = isCrashed 
+    ? { filter: 'blur(10px) contrast(200%) grayscale(100%)', transition: 'filter 0.5s ease-in-out' }
+    : { filter: 'none', transition: 'filter 1s ease-in-out' }
 
-  useEffect(() => {
-    if (!hasExperienceSkills) {
-      prevHasExperienceSkillsRef.current = false
-    }
-  }, [hasExperienceSkills])
-
-  // Scroll automático quando About é adicionado
-  useEffect(() => {
-    if (hasAbout && !prevHasAboutRef.current && containerRef.current) {
-      prevHasAboutRef.current = true
-      setTimeout(() => {
-        const sobreElement = document.getElementById('sobre')
-        if (sobreElement && containerRef.current) {
-          const navbarHeight = 80
-          const elementPosition = sobreElement.getBoundingClientRect().top + containerRef.current.scrollTop
-          containerRef.current.scrollTo({
-            top: elementPosition - navbarHeight - 20,
-            behavior: 'smooth'
-          })
-        }
-      }, 500)
-    }
-  }, [hasAbout])
-
-  // Scroll automático quando Experience/Skills são adicionados
-  useEffect(() => {
-    if (hasExperienceSkills && !prevHasExperienceSkillsRef.current && containerRef.current) {
-      prevHasExperienceSkillsRef.current = true
-      setTimeout(() => {
-        const experienciaElement = document.getElementById('experiencia')
-        if (experienciaElement && containerRef.current) {
-          const navbarHeight = 80
-          const elementPosition = experienciaElement.getBoundingClientRect().top + containerRef.current.scrollTop
-          containerRef.current.scrollTo({
-            top: elementPosition - navbarHeight - 20,
-            behavior: 'smooth'
-          })
-        }
-      }, 500)
-    }
-  }, [hasExperienceSkills])
-
-  const getBackgroundColor = () => {
-    if (theme === 'dark' || theme === 'cyber') {
-      return 'bg-gray-900'
-    }
-    return 'bg-white'
-  }
-
-  const crashStyle = isCrashed ? {
-    filter: 'blur(10px) contrast(200%) grayscale(100%)',
-    transition: 'filter 0.5s ease-in-out'
-  } : {
-    filter: 'none',
-    transition: 'filter 1s ease-in-out'
-  }
-
-  // Componente renderizado com CodeLens wrapper
-  const renderStyledSite = () => (
+  // Função unificada para renderizar o site estilizado
+  const renderSite = (isFinal = false) => (
     <motion.div
-      key="styled-site"
+      key={isFinal ? 'final' : 'styled-site'}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 1 }}
+      transition={isFinal ? undefined : { duration: 1 }}
       className="flex flex-col min-h-full"
     >
       <CodeLensWrapper code={codeSnippets.navbar} filename="Navbar.jsx">
-        <Navbar key="navbar" theme={theme} />
+        <Navbar theme={theme} />
       </CodeLensWrapper>
       
       <CodeLensWrapper code={codeSnippets.hero} filename="Hero.jsx">
-        <Hero key="hero" theme={theme} />
+        <Hero theme={theme} />
       </CodeLensWrapper>
       
       {hasAbout && (
         <div id="sobre">
           <CodeLensWrapper code={codeSnippets.about} filename="About.jsx">
-            <About key="about" theme={theme} />
+            <About theme={theme} />
           </CodeLensWrapper>
         </div>
       )}
@@ -394,65 +160,20 @@ export default function Preview({ action, payload }) {
         <>
           <div id="experiencia">
             <CodeLensWrapper code={codeSnippets.experience} filename="Experience.jsx">
-              <Experience key="experience" theme={theme} />
+              <Experience theme={theme} />
             </CodeLensWrapper>
           </div>
           <div id="tech-stack">
             <CodeLensWrapper code={codeSnippets.techstack} filename="TechStack.jsx">
-              <TechStack key="tech-stack" theme={theme} />
+              <TechStack theme={theme} />
             </CodeLensWrapper>
           </div>
         </>
       )}
       
-      <CodeLensWrapper code={codeSnippets.footer} filename="Footer.jsx">
-        <Footer key="footer" theme={theme} />
-      </CodeLensWrapper>
-    </motion.div>
-  )
-
-  const renderFinalSite = () => (
-    <motion.div
-      key="final"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="flex flex-col min-h-full"
-    >
-      <CodeLensWrapper code={codeSnippets.navbar} filename="Navbar.jsx">
-        <Navbar key="navbar" theme={theme} />
-      </CodeLensWrapper>
-      
-      <CodeLensWrapper code={codeSnippets.hero} filename="Hero.jsx">
-        <Hero key="hero" theme={theme} />
-      </CodeLensWrapper>
-      
-      {hasAbout && (
-        <div id="sobre">
-          <CodeLensWrapper code={codeSnippets.about} filename="About.jsx">
-            <About key="about" theme={theme} />
-          </CodeLensWrapper>
-        </div>
-      )}
-      
-      {hasExperienceSkills && (
-        <>
-          <div id="experiencia">
-            <CodeLensWrapper code={codeSnippets.experience} filename="Experience.jsx">
-              <Experience key="experience" theme={theme} />
-            </CodeLensWrapper>
-          </div>
-          <div id="tech-stack">
-            <CodeLensWrapper code={codeSnippets.techstack} filename="TechStack.jsx">
-              <TechStack key="tech-stack" theme={theme} />
-            </CodeLensWrapper>
-          </div>
-        </>
-      )}
-      
-      <div id="contato">
+      <div id={isFinal ? 'contato' : undefined}>
         <CodeLensWrapper code={codeSnippets.footer} filename="Footer.jsx">
-          <Footer key="footer" theme={theme} />
+          <Footer theme={theme} />
         </CodeLensWrapper>
       </div>
     </motion.div>
@@ -545,14 +266,13 @@ export default function Preview({ action, payload }) {
               </motion.div>
             )}
 
-            {(currentView === 'STYLED_SITE' || (isStyled && currentView !== 'FINAL')) && renderStyledSite()}
+            {(currentView === 'STYLED_SITE' || (isStyled && currentView !== 'FINAL')) && renderSite(false)}
 
-            {currentView === 'FINAL' && renderFinalSite()}
+            {currentView === 'FINAL' && renderSite(true)}
           </AnimatePresence>
         </div>
       </CodeLensProvider>
 
-      {/* Erro renderizado fora do AnimatePresence para garantir que fique sempre visível */}
       <AnimatePresence>
         {showError && (
           <motion.div

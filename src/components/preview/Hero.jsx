@@ -23,7 +23,6 @@ export default function Hero({ theme = 'light' }) {
           : 'bg-gradient-to-br from-gray-50 to-white'
       }`}
     >
-      {/* Background gradient animation */}
       <motion.div
         className="absolute inset-0 opacity-20"
         animate={{

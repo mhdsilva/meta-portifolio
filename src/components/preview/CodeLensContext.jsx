@@ -1,6 +1,5 @@
 import { useState, useEffect, createContext, useContext } from 'react'
 
-// Context para compartilhar estado do CodeLens entre componentes
 const CodeLensContext = createContext({
   isActive: false,
   mousePosition: { x: 0, y: 0 }
