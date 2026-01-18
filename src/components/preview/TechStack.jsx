@@ -3,7 +3,7 @@ import { Code, Database, Cloud, Users } from 'lucide-react'
 import { useRef } from 'react'
 import ScrambleText from './ScrambleText'
 
-export default function TechStack({ theme = 'light' }) {
+export default function TechStack({ theme = 'light', hasCodeLens = false }) {
   const isDark = theme === 'dark' || theme === 'cyber'
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
@@ -82,7 +82,7 @@ export default function TechStack({ theme = 'light' }) {
           className={`text-4xl md:text-5xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
-          <ScrambleText text="TECH STACK" duration={1500} />
+          {hasCodeLens ? <ScrambleText text="TECH STACK" duration={1500} /> : 'Tech Stack'}
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

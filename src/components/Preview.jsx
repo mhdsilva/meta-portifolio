@@ -63,6 +63,7 @@ function previewReducer(state, { type }) {
 export default function Preview({ action, payload }) {
   const [state, dispatch] = useReducer(previewReducer, initialState)
   const timeoutRef = useRef(null)
+  const errorTimeoutRef = useRef(null)
   const containerRef = useRef(null)
   const scrolledSectionsRef = useRef({ about: false, experience: false })
 
@@ -90,6 +91,13 @@ export default function Preview({ action, payload }) {
     if (!hasExperienceSkills) scrolledSectionsRef.current.experience = false
   }, [hasAbout, hasExperienceSkills])
 
+  // Cleanup do errorTimeoutRef no unmount
+  useEffect(() => {
+    return () => {
+      if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current)
+    }
+  }, [])
+
   useEffect(() => {
     if (hasAbout) scrollToSection('sobre', 'about')
   }, [hasAbout, scrollToSection])
@@ -111,11 +119,14 @@ export default function Preview({ action, payload }) {
     if (action === 'APPLY_STYLES') {
       timeoutRef.current = setTimeout(() => dispatch({ type: 'SET_VIEW' }), 100)
     } else if (action === 'FIX_CRASH') {
-      timeoutRef.current = setTimeout(() => dispatch({ type: 'HIDE_ERROR' }), 2000)
+      // Usa ref separado para não ser limpo quando a próxima action chegar
+      if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current)
+      errorTimeoutRef.current = setTimeout(() => dispatch({ type: 'HIDE_ERROR' }), 2500)
     }
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      // Não limpa errorTimeoutRef aqui - deixa ele completar
     }
   }, [action, payload])
 
@@ -144,7 +155,7 @@ export default function Preview({ action, payload }) {
       {hasAbout && (
         <div id="sobre">
           <CodeLensWrapper code={codeSnippets.about} filename="About.jsx">
-            <About theme={theme} />
+            <About theme={theme} hasCodeLens={hasCodeLens} />
           </CodeLensWrapper>
         </div>
       )}
@@ -153,12 +164,12 @@ export default function Preview({ action, payload }) {
         <>
           <div id="experiencia">
             <CodeLensWrapper code={codeSnippets.experience} filename="Experience.jsx">
-              <Experience theme={theme} />
+              <Experience theme={theme} hasCodeLens={hasCodeLens} />
             </CodeLensWrapper>
           </div>
           <div id="tech-stack">
             <CodeLensWrapper code={codeSnippets.techstack} filename="TechStack.jsx">
-              <TechStack theme={theme} />
+              <TechStack theme={theme} hasCodeLens={hasCodeLens} />
             </CodeLensWrapper>
           </div>
         </>

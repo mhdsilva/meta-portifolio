@@ -3,7 +3,7 @@ import { Calendar } from 'lucide-react'
 import { useRef } from 'react'
 import ScrambleText from './ScrambleText'
 
-export default function Experience({ theme = 'light' }) {
+export default function Experience({ theme = 'light', hasCodeLens = false }) {
   const isDark = theme === 'dark' || theme === 'cyber'
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
@@ -59,7 +59,7 @@ export default function Experience({ theme = 'light' }) {
           className={`text-4xl md:text-5xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
-          <ScrambleText text="EXPERIÊNCIA" duration={1500} />
+          {hasCodeLens ? <ScrambleText text="EXPERIÊNCIA" duration={1500} /> : 'Experiência'}
         </h2>
         
         <div className="relative">

@@ -3,7 +3,7 @@ import { GraduationCap, Award, Languages, BookOpen } from 'lucide-react'
 import { useRef } from 'react'
 import ScrambleText from './ScrambleText'
 
-export default function About({ theme = 'light' }) {
+export default function About({ theme = 'light', hasCodeLens = false }) {
   const isDark = theme === 'dark' || theme === 'cyber'
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
@@ -48,7 +48,7 @@ export default function About({ theme = 'light' }) {
           className={`text-4xl md:text-5xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
-          <ScrambleText text="SOBRE MIM" duration={1500} />
+          {hasCodeLens ? <ScrambleText text="SOBRE MIM" duration={1500} /> : 'Sobre Mim'}
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
