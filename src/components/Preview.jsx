@@ -8,7 +8,8 @@ import ErrorView from './preview/ErrorView'
 import Footer from './preview/Footer'
 import ThemeOptions from './preview/ThemeOptions'
 import About from './preview/About'
-import ExperienceSkills from './preview/ExperienceSkills'
+import Experience from './preview/Experience'
+import TechStack from './preview/TechStack'
 
 export default function Preview({ action, payload, onSelect }) {
   const [currentView, setCurrentView] = useState('INITIAL')
@@ -202,7 +203,16 @@ export default function Preview({ action, payload, onSelect }) {
             <Navbar key="navbar" theme={theme} />
             <Hero key="hero" theme={theme} />
             {hasAbout && <About key="about" theme={theme} />}
-            {hasExperienceSkills && <ExperienceSkills key="experience-skills" theme={theme} />}
+            {hasExperienceSkills && (
+              <>
+                <div id="experiencia">
+                  <Experience key="experience" theme={theme} />
+                </div>
+                <div id="tech-stack">
+                  <TechStack key="tech-stack" theme={theme} />
+                </div>
+              </>
+            )}
             <Footer key="footer" theme={theme} />
           </motion.div>
         )}
@@ -375,10 +385,23 @@ Recovering...`}
           >
             <Navbar key="navbar" theme={theme} />
             <Hero key="hero" theme={theme} />
-            {hasAbout && <About key="about" theme={theme} />}
-            {hasExperienceSkills && <ExperienceSkills key="experience-skills" theme={theme} />}
+            {hasAbout && (
+              <div id="sobre">
+                <About key="about" theme={theme} />
+              </div>
+            )}
+            {hasExperienceSkills && (
+              <>
+                <div id="experiencia">
+                  <Experience key="experience" theme={theme} />
+                </div>
+                <div id="tech-stack">
+                  <TechStack key="tech-stack" theme={theme} />
+                </div>
+              </>
+            )}
             {projects.length > 0 && (
-              <div className={`py-16 px-8 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
+              <div id="projetos" className={`py-16 px-8 ${theme === 'dark' ? 'bg-slate-950' : 'bg-white'}`}>
                 <div className="max-w-6xl mx-auto">
                   <h2 className={`text-3xl font-bold mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                     Projetos
@@ -404,7 +427,9 @@ Recovering...`}
                 </div>
               </div>
             )}
-            <Footer key="footer" theme={theme} />
+            <div id="contato">
+              <Footer key="footer" theme={theme} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

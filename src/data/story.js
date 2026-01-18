@@ -33,13 +33,13 @@ export const storyTimeline = [
   {
     id: 5,
     sender: 'user',
-    text: 'Gostei. Agora escreve uma seção "Sobre Mim" que conte que eu vim da roça mas domino o código.',
+    text: 'Perfeito! Agora adiciona uma seção "Sobre Mim" com layout Bento Grid. Inclui minha formação, destaque na OBM e idiomas.',
     delay: 3000
   },
   {
     id: 6,
     sender: 'ai',
-    text: 'Digitando bio... "Cultivando soluções digitais com a resiliência de quem entende o valor do plantio."',
+    text: 'Criando cards com glassmorphism... Organizando bio, formação USP/CEFET, medalha OBM e idiomas em grid assimétrico.',
     action: 'ADD_ABOUT', // Surge a seção de texto com uma animação de fade-in
     delay: 4500
   },
@@ -48,13 +48,13 @@ export const storyTimeline = [
   {
     id: 7,
     sender: 'user',
-    text: 'Ficou massa. Adiciona agora minha trajetória profissional e as tecnologias que eu uso.',
+    text: 'Excelente! Agora monta uma timeline vertical com minha experiência profissional e um grid categorizado do tech stack.',
     delay: 3000
   },
   {
     id: 8,
     sender: 'ai',
-    text: 'Mapeando linha do tempo e organizando o stack tecnológico no Celeiro de Habilidades.',
+    text: 'Renderizando timeline interativa: Kairoo Tech, Humanizadas, BeUni, Videomatik, Brooklyn Brothers... Organizando skills por categoria (Frontend, Backend, DB, DevOps, Soft Skills).',
     action: 'ADD_EXPERIENCE_SKILLS', // Aparecem os cards de exp e as tags de skills
     delay: 5000
   },

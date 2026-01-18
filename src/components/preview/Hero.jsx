@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Github, Linkedin, Mail } from 'lucide-react'
+import { ArrowRight, Linkedin, ExternalLink } from 'lucide-react'
 
 export default function Hero({ theme = 'light' }) {
   const isDark = theme === 'dark' || theme === 'cyber'
@@ -9,36 +9,66 @@ export default function Hero({ theme = 'light' }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className={`flex-1 flex items-center justify-center p-8 ${
+      className={`min-h-screen flex items-center justify-center p-8 pt-24 ${
         isDark 
-          ? 'bg-gradient-to-br from-gray-900 to-gray-950' 
+          ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' 
           : 'bg-gradient-to-br from-gray-50 to-white'
       }`}
     >
-      <div className="text-center max-w-2xl">
-        <motion.h1
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+      <div className="text-center max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
         >
-          Meta-Developer
-        </motion.h1>
-        <p className={`text-lg mb-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-          Construindo experiências digitais inovadoras com código e criatividade
-        </p>
-        <div className="flex gap-4 justify-center mb-8">
-          <Github size={24} className={`cursor-pointer transition-colors hover:text-blue-400 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-          <Linkedin size={24} className={`cursor-pointer transition-colors hover:text-blue-400 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-          <Mail size={24} className={`cursor-pointer transition-colors hover:text-blue-400 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-        </div>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2 mx-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          <h1 className={`text-6xl md:text-7xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+            Matheus Henrique da Silva
+          </h1>
+          <p className={`text-xl md:text-2xl mb-6 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+            Tech Lead @ Humanizadas | Arquitetura de Soluções & Inovação
+          </p>
+          <p className={`text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+            Engenheiro de Software movido pelo desafio de conectar gestão de produtos e código de alta performance. 
+            Especialista em levar produtos da concepção ao lançamento.
+          </p>
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          Ver Projetos
-          <ArrowRight size={20} />
-        </motion.button>
+          <motion.a
+            href="#projetos"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`flex items-center gap-2 px-8 py-4 rounded-lg font-semibold transition-all ${
+              isDark
+                ? 'bg-white/10 backdrop-blur-lg text-white border border-white/20 hover:border-purple-500/50 hover:bg-white/15'
+                : 'bg-purple-600 text-white hover:bg-purple-700'
+            }`}
+          >
+            Ver Projetos
+            <ArrowRight size={20} />
+          </motion.a>
+          <motion.a
+            href="https://linkedin.com/in/matheushenrique2773"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`flex items-center gap-2 px-8 py-4 rounded-lg font-semibold transition-all ${
+              isDark
+                ? 'bg-white/5 backdrop-blur-lg text-white border border-white/10 hover:border-blue-500/50 hover:bg-white/10'
+                : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300'
+            }`}
+          >
+            <Linkedin size={20} />
+            LinkedIn
+            <ExternalLink size={16} />
+          </motion.a>
+        </motion.div>
       </div>
     </motion.section>
   )
