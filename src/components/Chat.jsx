@@ -16,18 +16,14 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
     scrollToBottom()
   }, [messages, isTyping, isPaused, interactionOptions])
 
-  // Ajusta altura do textarea e faz scroll para o final quando o texto é digitado
   useEffect(() => {
     if (inputRef.current && isUserTypingInInput) {
-      // Reset altura para calcular corretamente
       inputRef.current.style.height = 'auto'
       const newHeight = Math.min(120, Math.max(40, inputRef.current.scrollHeight))
       inputRef.current.style.height = `${newHeight}px`
       setInputHeight(newHeight)
-      // Faz scroll para o final
       inputRef.current.scrollTop = inputRef.current.scrollHeight
     } else if (inputRef.current && !isUserTypingInInput) {
-      // Reset altura quando não está digitando
       inputRef.current.style.height = '40px'
       setInputHeight(40)
     }
@@ -39,7 +35,6 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
 
   return (
     <>
-      {/* Botão flutuante - só aparece quando não está em fullscreen e está fechado */}
       {!isFullscreen && (
         <AnimatePresence>
           {!isOpen && (
