@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import storyTimeline from '../data/story'
 
 export default function useStorytelling() {
@@ -7,13 +7,19 @@ export default function useStorytelling() {
   const [currentPayload, setCurrentPayload] = useState(null)
   const [isTyping, setIsTyping] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [isUserTypingInInput, setIsUserTypingInInput] = useState(false)
+  const [userInputText, setUserInputText] = useState('')
   
   const currentIndexRef = useRef(-1)
   const timeoutsRef = useRef([])
+  const intervalsRef = useRef([])
+  const nextStepRef = useRef(null)
 
   const clearTimeouts = () => {
     timeoutsRef.current.forEach(clearTimeout)
     timeoutsRef.current = []
+    intervalsRef.current.forEach(clearInterval)
+    intervalsRef.current = []
   }
 
   const processStep = useCallback((step) => {
@@ -25,10 +31,14 @@ export default function useStorytelling() {
       setIsPaused(true)
     }
 
-    const timeout = setTimeout(() => {
-      nextStep()
-    }, step.delay)
-    timeoutsRef.current.push(timeout)
+    if (step.delay > 0) {
+      const timeout = setTimeout(() => {
+        if (nextStepRef.current) {
+          nextStepRef.current()
+        }
+      }, step.delay)
+      timeoutsRef.current.push(timeout)
+    }
   }, [])
 
   const nextStep = useCallback(() => {
@@ -45,14 +55,45 @@ export default function useStorytelling() {
       setIsTyping(true)
       // Simula tempo de digitação baseado no tamanho da mensagem (mais natural)
       const typingTime = Math.max(1500, step.text.length * 30)
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setIsTyping(false)
         processStep(step)
       }, typingTime)
+      timeoutsRef.current.push(timeout)
     } else {
-      processStep(step)
+      // Para mensagens do usuário, simula digitação no input primeiro
+      setIsUserTypingInInput(true)
+      setUserInputText('')
+      
+      // Simula digitação letra por letra no input
+      let currentText = ''
+      let charIndex = 0
+      const typingInterval = setInterval(() => {
+        if (charIndex < step.text.length) {
+          currentText += step.text[charIndex]
+          setUserInputText(currentText)
+          charIndex++
+        } else {
+          clearInterval(typingInterval)
+          // Remove o intervalo da lista
+          intervalsRef.current = intervalsRef.current.filter(i => i !== typingInterval)
+          // Aguarda um pouco antes de "enviar"
+          const timeout = setTimeout(() => {
+            setIsUserTypingInInput(false)
+            setUserInputText('')
+            processStep(step)
+          }, 500) // Pequeno delay antes de enviar
+          timeoutsRef.current.push(timeout)
+        }
+      }, 30) // Velocidade de digitação (30ms por caractere)
+      intervalsRef.current.push(typingInterval)
     }
   }, [processStep])
+
+  // Atualiza o ref quando nextStep muda
+  useEffect(() => {
+    nextStepRef.current = nextStep
+  }, [nextStep])
 
   const startStory = useCallback(() => {
     clearTimeouts()
@@ -62,8 +103,12 @@ export default function useStorytelling() {
     setCurrentPayload(null)
     setIsPaused(false)
     setIsTyping(false)
-    nextStep()
-  }, [nextStep])
+    setIsUserTypingInInput(false)
+    setUserInputText('')
+    if (nextStepRef.current) {
+      nextStepRef.current()
+    }
+  }, [])
 
   const handleInteraction = useCallback((value) => {
     if (!isPaused) return
@@ -79,8 +124,10 @@ export default function useStorytelling() {
     ])
     
     setIsPaused(false)
-    nextStep()
-  }, [isPaused, nextStep])
+    if (nextStepRef.current) {
+      nextStepRef.current()
+    }
+  }, [isPaused])
 
   const resetStory = useCallback(() => {
     clearTimeouts()
@@ -90,6 +137,8 @@ export default function useStorytelling() {
     setCurrentPayload(null)
     setIsPaused(false)
     setIsTyping(false)
+    setIsUserTypingInInput(false)
+    setUserInputText('')
   }, [])
 
   return {
@@ -98,6 +147,8 @@ export default function useStorytelling() {
     currentPayload,
     isTyping,
     isPaused,
+    isUserTypingInInput,
+    userInputText,
     startStory,
     handleInteraction,
     resetStory,

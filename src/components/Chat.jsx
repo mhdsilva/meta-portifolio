@@ -1,9 +1,12 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Bot, User, Minimize2, RotateCcw } from 'lucide-react'
 
-export default function Chat({ messages, isTyping, isPaused, interactionOptions, onInteraction, isOpen, onToggle, onReset }) {
+export default function Chat({ messages, isTyping, isPaused, interactionOptions, onInteraction, isOpen, onToggle, onReset, isUserTypingInInput, userInputText }) {
   const messagesEndRef = useRef(null)
+  const inputRef = useRef(null)
+  const [inputHeight, setInputHeight] = useState(40)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -13,13 +16,29 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
     scrollToBottom()
   }, [messages, isTyping, isPaused, interactionOptions])
 
+  // Ajusta altura do textarea e faz scroll para o final quando o texto é digitado
+  useEffect(() => {
+    if (inputRef.current && isUserTypingInInput) {
+      // Reset altura para calcular corretamente
+      inputRef.current.style.height = 'auto'
+      const newHeight = Math.min(120, Math.max(40, inputRef.current.scrollHeight))
+      inputRef.current.style.height = `${newHeight}px`
+      setInputHeight(newHeight)
+      // Faz scroll para o final
+      inputRef.current.scrollTop = inputRef.current.scrollHeight
+    } else if (inputRef.current && !isUserTypingInInput) {
+      // Reset altura quando não está digitando
+      inputRef.current.style.height = '40px'
+      setInputHeight(40)
+    }
+  }, [userInputText, isUserTypingInInput])
+
   const handleOptionClick = (option) => {
     onInteraction(option.label)
   }
 
   return (
     <>
-      {/* Botão flutuante quando fechado */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
@@ -27,7 +46,7 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={onToggle}
-            className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-50"
+            className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[110]"
           >
             <Bot size={24} className="text-white" />
             {messages.length > 0 && (
@@ -39,7 +58,6 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
         )}
       </AnimatePresence>
 
-      {/* Chat flutuante */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -47,7 +65,7 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 400, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-6 right-6 w-full max-w-md h-[600px] bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden"
+            className="fixed bottom-6 right-6 w-full max-w-md h-[600px] bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl flex flex-col z-[110] overflow-hidden"
           >
             <div className="p-4 border-b border-gray-800 bg-gray-900 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -82,32 +100,36 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
 
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <AnimatePresence>
-          {messages.map((msg) => (
-            <motion.div
-              key={msg.id || msg.text}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex items-start gap-2 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  msg.sender === 'user' ? 'bg-blue-600' : 'bg-gray-700'
-                }`}>
-                  {msg.sender === 'user' ? <User size={16} className="text-white" /> : <Bot size={16} className="text-gray-300" />}
+          {messages.map((msg) => {
+            const messageId = msg.id || msg.text
+            
+            return (
+              <motion.div
+                key={messageId}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`flex items-start gap-2 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    msg.sender === 'user' ? 'bg-blue-600' : 'bg-gray-700'
+                  }`}>
+                    {msg.sender === 'user' ? <User size={16} className="text-white" /> : <Bot size={16} className="text-gray-300" />}
+                  </div>
+                  <div
+                    className={`px-4 py-2 rounded-2xl ${
+                      msg.sender === 'user'
+                        ? 'bg-blue-600 text-white rounded-br-md'
+                        : 'bg-gray-700 text-gray-100 rounded-bl-md'
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
                 </div>
-                <div
-                  className={`px-4 py-2 rounded-2xl ${
-                    msg.sender === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-md'
-                      : 'bg-gray-700 text-gray-100 rounded-bl-md'
-                  }`}
-                >
-                  {msg.text}
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            )
+          })}
           
           {isTyping && (
             <motion.div
@@ -162,21 +184,46 @@ export default function Chat({ messages, isTyping, isPaused, interactionOptions,
       </div>
 
             <div className="p-4 border-t border-gray-800 bg-gray-900">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  disabled={true}
-                  placeholder={isPaused ? "Selecione uma opção acima..." : "Aguardando IA..."}
-                  className="flex-1 bg-gray-800 text-gray-500 px-4 py-2 rounded-lg border border-gray-700 opacity-50 cursor-not-allowed"
+              <div className="flex gap-2 items-end">
+                <textarea
+                  ref={inputRef}
+                  value={isUserTypingInInput ? userInputText : ''}
+                  readOnly
+                  placeholder={isPaused ? "Selecione uma opção acima..." : isUserTypingInInput ? "Digitando..." : "Aguardando IA..."}
+                  rows={1}
+                  className={`flex-1 px-4 py-2 rounded-lg border transition-all resize-none overflow-y-auto ${
+                    isUserTypingInInput
+                      ? 'bg-gray-800 text-white border-blue-500 cursor-text'
+                      : 'bg-gray-800 text-gray-500 border-gray-700 opacity-50 cursor-not-allowed'
+                  }`}
+                  style={{
+                    minHeight: '40px',
+                    maxHeight: '120px',
+                    height: `${inputHeight}px`
+                  }}
                 />
                 <button
                   type="button"
-                  disabled={true}
-                  className="px-4 py-2 rounded-lg bg-gray-700 text-gray-500 cursor-not-allowed flex items-center justify-center"
+                  disabled={!isUserTypingInInput}
+                  className={`px-4 py-2 rounded-lg flex items-center justify-center transition-all flex-shrink-0 ${
+                    isUserTypingInInput
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                      : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  }`}
                 >
                   <Send size={20} />
                 </button>
               </div>
+              {isUserTypingInInput && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-2 text-xs text-gray-400 flex items-center gap-1"
+                >
+                  <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" />
+                  Digitando...
+                </motion.div>
+              )}
             </div>
           </motion.div>
         )}

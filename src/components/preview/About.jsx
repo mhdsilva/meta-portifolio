@@ -20,7 +20,7 @@ export default function About({ theme = 'light' }) {
     {
       icon: Award,
       title: 'Destaque',
-      content: 'Medalhista de Bronze na OBM (Olimpíada Brasileira de Matemática)',
+      content: 'Medalhista na Olimpíada Brasileira de Matemática',
       span: 'col-span-1'
     },
     {

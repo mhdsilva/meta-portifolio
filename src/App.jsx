@@ -10,6 +10,8 @@ function App() {
     currentPayload,
     isTyping,
     isPaused,
+    isUserTypingInInput,
+    userInputText,
     startStory,
     handleInteraction,
     resetStory
@@ -37,21 +39,22 @@ function App() {
         <Preview 
           action={currentAction} 
           payload={currentPayload}
-          onSelect={handleInteraction}
         />
       </div>
 
       {/* Chat flutuante */}
-      <Chat
-        messages={messages}
-        isTyping={isTyping}
-        onInteraction={handleInteraction}
-        isPaused={isPaused}
-        interactionOptions={currentAction === 'SHOW_INTERACTION' ? currentPayload?.options : null}
-        isOpen={isChatOpen}
-        onToggle={() => setIsChatOpen(!isChatOpen)}
-        onReset={resetStory}
-      />
+          <Chat
+            messages={messages}
+            isTyping={isTyping}
+            onInteraction={handleInteraction}
+            isPaused={isPaused}
+            interactionOptions={currentAction === 'SHOW_INTERACTION' ? currentPayload?.options : null}
+            isOpen={isChatOpen}
+            onToggle={() => setIsChatOpen(!isChatOpen)}
+            onReset={resetStory}
+            isUserTypingInInput={isUserTypingInInput}
+            userInputText={userInputText}
+          />
     </div>
   )
 }
