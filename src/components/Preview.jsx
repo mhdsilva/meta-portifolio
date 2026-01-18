@@ -65,7 +65,7 @@ export default function Preview({ action, payload, isPaused, onSelect }) {
   }
 
   return (
-    <div className={`flex flex-col h-full transition-colors duration-500 ${getBackgroundColor()}`}>
+    <div className={`flex flex-col h-screen w-screen transition-colors duration-500 ${getBackgroundColor()}`}>
       <AnimatePresence mode="wait">
         {currentView === 'INITIAL' && (
           <motion.div
