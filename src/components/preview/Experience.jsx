@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { Calendar } from 'lucide-react'
 import { useRef } from 'react'
 import ScrambleText from './ScrambleText'
+import TiltCard from './TiltCard'
 
 export default function Experience({ theme = 'light', hasCodeLens = false }) {
   const isDark = theme === 'dark' || theme === 'cyber'
@@ -92,15 +93,11 @@ export default function Experience({ theme = 'light', hasCodeLens = false }) {
                   className={`absolute left-6 top-2 w-4 h-4 rounded-full ${isDark ? 'bg-purple-500' : 'bg-purple-600'} border-4 ${isDark ? 'border-slate-950' : 'border-white'}`}
                 />
                 
-                <motion.div
-                  whileHover={{ 
-                    scale: 1.02, 
-                    x: 10,
-                    rotateY: 5,
-                    transition: { duration: 0.3 }
-                  }}
-                  style={{ transformStyle: 'preserve-3d' }}
-                  className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-xl p-6 hover:border-purple-500/50 transition-all cursor-pointer`}
+                <TiltCard
+                  isActive={hasCodeLens}
+                  maxTilt={12}
+                  glareOpacity={0.25}
+                  className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-xl p-6 hover:border-purple-500/50 transition-colors cursor-pointer`}
                 >
                   <div className="flex items-start gap-4 mb-3">
                     <div className={`text-3xl ${isDark ? 'bg-white/10' : 'bg-gray-100'} rounded-lg p-3`}>
@@ -124,7 +121,7 @@ export default function Experience({ theme = 'light', hasCodeLens = false }) {
                       </p>
                     </div>
                   </div>
-                </motion.div>
+                </TiltCard>
               </motion.div>
             ))}
           </div>

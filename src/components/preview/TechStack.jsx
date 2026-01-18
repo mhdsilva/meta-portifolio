@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { Code, Database, Cloud, Users } from 'lucide-react'
 import { useRef } from 'react'
 import ScrambleText from './ScrambleText'
+import TiltCard from './TiltCard'
 
 export default function TechStack({ theme = 'light', hasCodeLens = false }) {
   const isDark = theme === 'dark' || theme === 'cyber'
@@ -93,50 +94,48 @@ export default function TechStack({ theme = 'light', hasCodeLens = false }) {
             return (
               <motion.div
                 key={category.title}
-                initial={{ opacity: 0, y: 50, rotateX: -20, scale: 0.9 }}
-                animate={isInView ? { opacity: 1, y: 0, rotateX: 0, scale: 1 } : { opacity: 0, y: 50, rotateX: -20, scale: 0.9 }}
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
                 transition={{ 
                   delay: 0.3 + index * 0.1,
                   duration: 0.6,
                   type: 'spring',
                   stiffness: 100
                 }}
-                whileHover={{ 
-                  scale: 1.05, 
-                  y: -8,
-                  rotateY: 5,
-                  rotateX: 5,
-                  transition: { duration: 0.3 }
-                }}
-                style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
-                className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-2xl p-6 hover:border-purple-500/50 transition-all cursor-pointer`}
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`p-2 rounded-lg ${colors.bg}`}>
-                    <Icon size={24} className={colors.text} />
+                <TiltCard
+                  isActive={hasCodeLens}
+                  maxTilt={15}
+                  glareOpacity={0.3}
+                  className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-2xl p-6 hover:border-purple-500/50 transition-colors cursor-pointer h-full`}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`p-2 rounded-lg ${colors.bg}`}>
+                      <Icon size={24} className={colors.text} />
+                    </div>
+                    <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                      {category.title}
+                    </h3>
                   </div>
-                  <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
-                    {category.title}
-                  </h3>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {category.skills.map((skill, skillIndex) => (
-                    <motion.span
-                      key={skill}
-                      initial={{ opacity: 0, scale: 0, rotate: -180 }}
-                      animate={isInView ? { opacity: 1, scale: 1, rotate: 0 } : { opacity: 0, scale: 0, rotate: -180 }}
-                      transition={{ 
-                        delay: 0.4 + index * 0.1 + skillIndex * 0.05,
-                        type: 'spring',
-                        stiffness: 200
-                      }}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      className={`px-3 py-1.5 rounded-full text-sm font-medium border ${colors.bg} ${colors.text} ${colors.border} cursor-pointer`}
-                    >
-                      {skill}
-                    </motion.span>
-                  ))}
-                </div>
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.map((skill, skillIndex) => (
+                      <motion.span
+                        key={skill}
+                        initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                        animate={isInView ? { opacity: 1, scale: 1, rotate: 0 } : { opacity: 0, scale: 0, rotate: -180 }}
+                        transition={{ 
+                          delay: 0.4 + index * 0.1 + skillIndex * 0.05,
+                          type: 'spring',
+                          stiffness: 200
+                        }}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium border ${colors.bg} ${colors.text} ${colors.border} cursor-pointer`}
+                      >
+                        {skill}
+                      </motion.span>
+                    ))}
+                  </div>
+                </TiltCard>
               </motion.div>
             )
           })}

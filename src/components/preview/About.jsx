@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { GraduationCap, Award, Languages, BookOpen } from 'lucide-react'
 import { useRef } from 'react'
 import ScrambleText from './ScrambleText'
+import TiltCard from './TiltCard'
 
 export default function About({ theme = 'light', hasCodeLens = false }) {
   const isDark = theme === 'dark' || theme === 'cyber'
@@ -57,36 +58,36 @@ export default function About({ theme = 'light', hasCodeLens = false }) {
             return (
               <motion.div
                 key={card.title}
-                initial={{ opacity: 0, y: 50, rotateX: -15 }}
-                animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: 50, rotateX: -15 }}
+                initial={{ opacity: 0, y: 50 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
                 transition={{ 
                   delay: 0.3 + index * 0.1,
                   duration: 0.6,
                   type: 'spring',
                   stiffness: 100
                 }}
-                whileHover={{ 
-                  scale: 1.03, 
-                  y: -8,
-                  rotateY: 5,
-                  transition: { duration: 0.3 }
-                }}
-                style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
-                className={`${card.span} ${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-2xl p-6 hover:border-purple-500/50 transition-all cursor-pointer`}
+                className={card.span}
               >
-                <div className="flex items-start gap-4">
-                  <div className={`p-3 rounded-lg ${isDark ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-100 text-purple-600'}`}>
-                    <Icon size={24} />
+                <TiltCard
+                  isActive={hasCodeLens}
+                  maxTilt={12}
+                  glareOpacity={0.25}
+                  className={`${isDark ? 'bg-white/5 backdrop-blur-lg border border-white/10' : 'bg-gray-50 border border-gray-200'} rounded-2xl p-6 hover:border-purple-500/50 transition-colors cursor-pointer h-full`}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`p-3 rounded-lg ${isDark ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-100 text-purple-600'}`}>
+                      <Icon size={24} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                        {card.title}
+                      </h3>
+                      <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                        {card.content}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
-                      {card.title}
-                    </h3>
-                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`} style={{ fontFamily: 'Inter, sans-serif' }}>
-                      {card.content}
-                    </p>
-                  </div>
-                </div>
+                </TiltCard>
               </motion.div>
             )
           })}
