@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { GraduationCap, Award, Languages, BookOpen } from 'lucide-react'
 import { useRef } from 'react'
+import ScrambleText from './ScrambleText'
 
 export default function About({ theme = 'light' }) {
   const isDark = theme === 'dark' || theme === 'cyber'
@@ -43,15 +44,12 @@ export default function About({ theme = 'light' }) {
       className={`py-20 px-8 ${isDark ? 'bg-slate-950' : 'bg-white'}`}
     >
       <div className="max-w-7xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+        <h2
           className={`text-4xl md:text-5xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
-          Sobre Mim
-        </motion.h2>
+          <ScrambleText text="SOBRE MIM" duration={1500} />
+        </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {cards.map((card, index) => {

@@ -68,7 +68,6 @@ export default function Preview({ action, payload }) {
 
   const { currentView, theme, showError, isFixed, isStyled, hasAbout, hasExperienceSkills, isCrashed, hasCodeLens } = state
 
-  // Scroll automático unificado para novas seções
   const scrollToSection = useCallback((sectionId, sectionKey) => {
     if (scrolledSectionsRef.current[sectionKey] || !containerRef.current) return
     
@@ -86,13 +85,11 @@ export default function Preview({ action, payload }) {
     }, 500)
   }, [])
 
-  // Reset scroll refs quando seções são removidas
   useEffect(() => {
     if (!hasAbout) scrolledSectionsRef.current.about = false
     if (!hasExperienceSkills) scrolledSectionsRef.current.experience = false
   }, [hasAbout, hasExperienceSkills])
 
-  // Scroll automático ao adicionar seções
   useEffect(() => {
     if (hasAbout) scrollToSection('sobre', 'about')
   }, [hasAbout, scrollToSection])
@@ -101,7 +98,6 @@ export default function Preview({ action, payload }) {
     if (hasExperienceSkills) scrollToSection('experiencia', 'experience')
   }, [hasExperienceSkills, scrollToSection])
 
-  // Processar ações
   useEffect(() => {
     if (!action) return
     
@@ -130,7 +126,6 @@ export default function Preview({ action, payload }) {
     ? { filter: 'blur(10px) contrast(200%) grayscale(100%)', transition: 'filter 0.5s ease-in-out' }
     : { filter: 'none', transition: 'filter 1s ease-in-out' }
 
-  // Função unificada para renderizar o site estilizado
   const renderSite = (isFinal = false) => (
     <motion.div
       key={isFinal ? 'final' : 'styled-site'}
@@ -140,9 +135,7 @@ export default function Preview({ action, payload }) {
       transition={isFinal ? undefined : { duration: 1 }}
       className="flex flex-col min-h-full"
     >
-      <CodeLensWrapper code={codeSnippets.navbar} filename="Navbar.jsx">
-        <Navbar theme={theme} />
-      </CodeLensWrapper>
+      <Navbar theme={theme} />
       
       <CodeLensWrapper code={codeSnippets.hero} filename="Hero.jsx">
         <Hero theme={theme} />
